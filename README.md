@@ -2,7 +2,7 @@
 
 ## *In Progress*
 
-The project is still in progress, the folloing features are still to be added before a release will be available through npm
+The project is still in progress, the following features are still to be added. A release will be available through npm in the near future.
 
 - [ ] User defined types
 - [ ] Re-using existing schemas in the definition of new ones
