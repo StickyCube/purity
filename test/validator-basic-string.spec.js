@@ -75,7 +75,7 @@ describe('Validator - String', function () {
 
 	describe('Required option', function () {
 		var validator;
-		var RequiredElement = { $type: String, required: true };
+		var RequiredElement = { $type: String, $required: true };
 
 		before(function () {
 			validator = new Validator(RequiredElement);
@@ -116,7 +116,7 @@ describe('Validator - String', function () {
 
 	describe('Default option', function () {
 		var validator;
-		var DefaultElement = { $type: String, default: 'bar' };
+		var DefaultElement = { $type: String, $default: 'bar' };
 
 		before(function () {
 			validator = new Validator(DefaultElement);
@@ -153,7 +153,7 @@ describe('Validator - String', function () {
 	
 	describe('minlength option', function () {
 		var validator;
-		var DefaultElement = { $type: String, minlength: 5 };
+		var DefaultElement = { $type: String, $minlength: 5 };
 
 		before(function () {
 			validator = new Validator(DefaultElement);
@@ -185,7 +185,7 @@ describe('Validator - String', function () {
 
 	describe('maxlength option', function () {
 		var validator;
-		var DefaultElement = { $type: String, maxlength: 5 };
+		var DefaultElement = { $type: String, $maxlength: 5 };
 
 		before(function () {
 			validator = new Validator(DefaultElement);
@@ -217,7 +217,7 @@ describe('Validator - String', function () {
 
 	describe('fixedwidth option', function () {
 		var validator;
-		var DefaultElement = { $type: String, fixedwidth: 3 };
+		var DefaultElement = { $type: String, $fixedwidth: 3 };
 
 		before(function () {
 			validator = new Validator(DefaultElement);
@@ -251,7 +251,7 @@ describe('Validator - String', function () {
 
 	describe('regex option', function () {
 		var validator;
-		var DefaultElement = { $type: String, regex: /(foo|bar)/ };
+		var DefaultElement = { $type: String, $regex: /(foo|bar)/ };
 
 		before(function () {
 			validator = new Validator(DefaultElement);
@@ -276,7 +276,7 @@ describe('Validator - String', function () {
 
 	describe('tolower option', function () {
 		var validator;
-		var DefaultElement = { $type: String, tolower: true };
+		var DefaultElement = { $type: String, $tolower: true };
 
 		before(function () {
 			validator = new Validator(DefaultElement);
@@ -306,7 +306,7 @@ describe('Validator - String', function () {
 
 	describe('toupper option', function () {
 		var validator;
-		var DefaultElement = { $type: String, toupper: true };
+		var DefaultElement = { $type: String, $toupper: true };
 
 		before(function () {
 			validator = new Validator(DefaultElement);

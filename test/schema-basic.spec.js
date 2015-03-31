@@ -75,10 +75,10 @@ describe('Schema', function () {
 
 		describe('Schema Validation', function () {
 			var schema = new Schema({
-				name: { $type: String, required: true },
+				name: { $type: String, $required: true },
 				address: {
-					country: { $type: String, required: true },
-					city: { $type: String, default: 'London' }
+					country: { $type: String, $required: true },
+					city: { $type: String, $default: 'London' }
 				}
 			});
 

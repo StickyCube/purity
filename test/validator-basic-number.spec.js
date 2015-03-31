@@ -62,7 +62,7 @@ describe('Validator - Number', function () {
 	describe('Integer option', function () {
 		var validator;
 		before(function () {
-			var Element = { $type: Number, integer: true };
+			var Element = { $type: Number, $integer: true };
 			validator = new Validator(Element);
 		});
 
@@ -107,7 +107,7 @@ describe('Validator - Number', function () {
 	describe('tofixed option', function () {
 		var validator;
 		before(function () {
-			var Element = { $type: Number, tofixed: 2 };
+			var Element = { $type: Number, $tofixed: 2 };
 			validator = new Validator(Element);
 		});
 
@@ -166,7 +166,7 @@ describe('Validator - Number', function () {
 		var validator;
 
 		before(function () {
-			var Element = { $type: Number, abs: true };
+			var Element = { $type: Number, $abs: true };
 			validator = new Validator(Element);
 		});
 
@@ -210,7 +210,7 @@ describe('Validator - Number', function () {
 		var validator;
 
 		before(function () {
-			var Element = { $type: Number, neg: true };
+			var Element = { $type: Number, $neg: true };
 			validator = new Validator(Element);
 		});
 
@@ -253,7 +253,7 @@ describe('Validator - Number', function () {
 	describe('Modulus option', function () {
 		var validator;
 		before(function () {
-			validator = new Validator({ $type: Number, mod: 10 });
+			validator = new Validator({ $type: Number, $mod: 10 });
 		});
 
 		it('should validate 0', function () {
@@ -291,9 +291,9 @@ describe('Validator - Number', function () {
 		var validatorZero;
 
 		before(function () {
-			var ElementPos = { $type: Number, gt: 10 };
-			var ElementNeg = { $type: Number, gt: -10 };
-			var ElementZero = { $type: Number, gt: 0 };
+			var ElementPos = { $type: Number, $gt: 10 };
+			var ElementNeg = { $type: Number, $gt: -10 };
+			var ElementZero = { $type: Number, $gt: 0 };
 
 			validatorPos = new Validator(ElementPos);
 			validatorNeg = new Validator(ElementNeg);
@@ -364,9 +364,9 @@ describe('Validator - Number', function () {
 		var validatorZero;
 
 		before(function () {
-			var ElementPos = { $type: Number, gte: 10 };
-			var ElementNeg = { $type: Number, gte: -10 };
-			var ElementZero = { $type: Number, gte: 0 };
+			var ElementPos = { $type: Number, $gte: 10 };
+			var ElementNeg = { $type: Number, $gte: -10 };
+			var ElementZero = { $type: Number, $gte: 0 };
 
 			validatorPos = new Validator(ElementPos);
 			validatorNeg = new Validator(ElementNeg);
@@ -431,9 +431,9 @@ describe('Validator - Number', function () {
 		var validatorZero;
 
 		before(function () {
-			var ElementPos = { $type: Number, lt: 10 };
-			var ElementNeg = { $type: Number, lt: -10 };
-			var ElementZero = { $type: Number, lt: 0 };
+			var ElementPos = { $type: Number, $lt: 10 };
+			var ElementNeg = { $type: Number, $lt: -10 };
+			var ElementZero = { $type: Number, $lt: 0 };
 
 			validatorPos = new Validator(ElementPos);
 			validatorNeg = new Validator(ElementNeg);
@@ -504,9 +504,9 @@ describe('Validator - Number', function () {
 		var validatorZero;
 
 		before(function () {
-			var ElementPos = { $type: Number, lte: 10 };
-			var ElementNeg = { $type: Number, lte: -10 };
-			var ElementZero = { $type: Number, lte: 0 };
+			var ElementPos = { $type: Number, $lte: 10 };
+			var ElementNeg = { $type: Number, $lte: -10 };
+			var ElementZero = { $type: Number, $lte: 0 };
 
 			validatorPos = new Validator(ElementPos);
 			validatorNeg = new Validator(ElementNeg);

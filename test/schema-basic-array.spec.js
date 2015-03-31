@@ -38,7 +38,7 @@ describe('Schema', function () {
 	describe('purge option', function () {
 
 		var basicNumberArraySchama = new Schema({
-			data: [{ $type: Number, purge: true }]
+			data: [{ $type: Number, $purge: true }]
 		});
 
 		it('should leave a valid array unchanged', function () {
@@ -80,10 +80,10 @@ describe('Schema', function () {
 			return a.length < b.length ? -1 : 1;
 		};
 
-		var noSortSchema = new Schema({ data: [{ $type: String, sort: 'foo' }] });
-		var sortAscSchema = new Schema({ data: [{ $type: String, sort: 'asc' }] });
-		var sortDescSchema = new Schema({ data: [{ $type: String, sort: 'asc' }] });
-		var sortFnSchema = new Schema({ data: [{ $type: String, sort: sortFn }] });
+		var noSortSchema = new Schema({ data: [{ $type: String, $sort: 'foo' }] });
+		var sortAscSchema = new Schema({ data: [{ $type: String, $sort: 'asc' }] });
+		var sortDescSchema = new Schema({ data: [{ $type: String, $sort: 'asc' }] });
+		var sortFnSchema = new Schema({ data: [{ $type: String, $sort: sortFn }] });
 
 		var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
 		var customData = { data: ['a', ] }
@@ -139,7 +139,7 @@ describe('Schema', function () {
 
 	describe('unique option', function () {
 		var uniqueSchema = new Schema({
-			data: [ { $type: String, unique: true } ]
+			data: [ { $type: String, $unique: true } ]
 		});
 
 		it('should leave a unique array unchanged', function () {
