@@ -5,7 +5,7 @@ var Schema 	= require('../index').Schema;
 
 var ValidDefinition = { name: { $type: String } };
 var validArrayDefinition = { name: [{ $type: String }] }
-var InvalidDefinition = { name: String };
+var InvalidDefinition = { name: 'String' };
 
 describe('Schema', function () {
 
@@ -66,11 +66,11 @@ describe('Schema', function () {
 				}).not.to.throw();
 			});
 
-			it('Should not throw when an array of a valid definition is passed', function () {
-				expect(function () {
-					new Schema(validArrayDefinition);
-				}).not.to.throw();
-			});
+			// it('Should not throw when an array of a valid definition is passed', function () {
+			// 	expect(function () {
+			// 		new Schema(validArrayDefinition);
+			// 	}).not.to.throw();
+			// });
 		});
 
 		describe('Schema Validation', function () {

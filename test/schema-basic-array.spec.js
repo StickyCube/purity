@@ -4,6 +4,12 @@ var expect = require('chai').expect;
 var Schema = require('../index').Schema;
 
 describe('Schema', function () {
+	var error, result;
+
+	before(function () {
+		error = result = undefined;
+	});
+
 	describe('basic arrays', function () {
 
 		var basicNumberArraySchama = new Schema({
@@ -16,22 +22,26 @@ describe('Schema', function () {
 
 		it('should validate an array of numbers', function () {
 			basicNumberArraySchama.validate({ data: [1, 2, 3] }, function (err, res) {
-				expect(err).to.be.null;
-				expect(res.data).to.have.length(3);
-				expect(res.data).to.have.members([1, 2, 3]);
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result.data).to.have.length(3);
+			expect(result.data).to.have.members([1, 2, 3]);
 		});
 
 		it('should not validate an invalid array', function () {
 			basicNumberArraySchama.validate({ data: [1, 2, '3'] }, function (err, res) {
-				expect(err).to.be.a('object');
-				expect(err.missing).to.have.length(0);
-				expect(err.invalid).to.have.length(1);
-				expect(err.invalid).to.have.members(['data']);
-				expect(res).to.be.a('object');
-				expect(res.data).to.have.length(3);
-				expect(res.data).to.have.members([1, 2, '3'])
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.a('object');
+			expect(error.missing).to.have.length(0);
+			expect(error.invalid).to.have.length(1);
+			expect(error.invalid).to.have.members(['data']);
+			expect(result).to.be.a('object');
+			expect(result.data).to.have.length(3);
+			expect(result.data).to.have.members([1, 2, '3'])
 		});
 	});
 
@@ -47,30 +57,36 @@ describe('Schema', function () {
 			};
 
 			basicNumberArraySchama.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res).to.be.a('object');
-				expect(res.data).to.have.length(3);
-				expect(res.data).to.have.members([1, 2, 3]);
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result).to.be.a('object');
+			expect(result.data).to.have.length(3);
+			expect(result.data).to.have.members([1, 2, 3]);
 		});
 
 		it('should remove invalid elements', function () {
 			var data = { data: [1, 2, '3'] };
 			basicNumberArraySchama.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res).to.be.a('object');
-				expect(res.data).to.have.length(2);
-				expect(res.data).to.have.members([1, 2]);
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result).to.be.a('object');
+			expect(result.data).to.have.length(2);
+			expect(result.data).to.have.members([1, 2]);
 		});
 
 		it('should remove all elements if they are invalid', function () {
 			var data = { data: ['1', '2', '3'] };
 			basicNumberArraySchama.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res).to.be.a('object');
-				expect(res.data).to.have.length(0);
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result).to.be.a('object');
+			expect(result.data).to.have.length(0);
 		});
 	});
 
@@ -82,58 +98,74 @@ describe('Schema', function () {
 
 		var noSortSchema = new Schema({ data: [{ $type: String, $sort: 'foo' }] });
 		var sortAscSchema = new Schema({ data: [{ $type: String, $sort: 'asc' }] });
-		var sortDescSchema = new Schema({ data: [{ $type: String, $sort: 'asc' }] });
+		var sortDescSchema = new Schema({ data: [{ $type: String, $sort: 'desc' }] });
 		var sortFnSchema = new Schema({ data: [{ $type: String, $sort: sortFn }] });
 
-		var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
-		var customData = { data: ['a', ] }
+		var data, customData;
+
+		before(function() {
+			data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
+			customData = { data: ['a', ] }
+		});
 
 		it('should sort data ascending', function () {
 			sortAscSchema.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res.data).to.have.length(5);
-				expect(res.data[0]).to.equal('aaa');
-				expect(res.data[1]).to.equal('b');
-				expect(res.data[2]).to.equal('ccccc');
-				expect(res.data[3]).to.equal('dddd');
-				expect(res.data[4]).to.equal('ee');
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result.data).to.have.length(5);
+			expect(result.data[0]).to.equal('aaa');
+			expect(result.data[1]).to.equal('b');
+			expect(result.data[2]).to.equal('ccccc');
+			expect(result.data[3]).to.equal('dddd');
+			expect(result.data[4]).to.equal('ee');
 		});
 
 		it('should sort data descending', function () {
 			sortDescSchema.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res.data).to.have.length(5);
-				expect(res.data[0]).to.equal('aaa');
-				expect(res.data[1]).to.equal('b');
-				expect(res.data[2]).to.equal('ccccc');
-				expect(res.data[3]).to.equal('dddd');
-				expect(res.data[4]).to.equal('ee');
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result.data).to.have.length(5);
+			expect(result.data[0]).to.equal('aaa');
+			expect(result.data[1]).to.equal('b');
+			expect(result.data[2]).to.equal('ccccc');
+			expect(result.data[3]).to.equal('dddd');
+			expect(result.data[4]).to.equal('ee');
 		});
 
 		it('should sort data by length', function () {
 			sortFnSchema.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res.data).to.have.length(5);
-				expect(res.data[0]).to.equal('b');
-				expect(res.data[1]).to.equal('ee');
-				expect(res.data[2]).to.equal('aaa');
-				expect(res.data[3]).to.equal('dddd');
-				expect(res.data[4]).to.equal('ccccc');
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result.data).to.have.length(5);
+			expect(result.data[0]).to.equal('b');
+			expect(result.data[1]).to.equal('ee');
+			expect(result.data[2]).to.equal('aaa');
+			expect(result.data[3]).to.equal('dddd');
+			expect(result.data[4]).to.equal('ccccc');
 		});
 
 		it('should not sort data', function () {
+			// console.log(data);
 			noSortSchema.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res.data).to.have.length(5);
-				expect(res.data[0]).to.equal('ee');
-				expect(res.data[1]).to.equal('b');
-				expect(res.data[2]).to.equal('aaa');
-				expect(res.data[3]).to.equal('ccccc');
-				expect(res.data[4]).to.equal('dddd');
+				// console.log(res);
+				error = err;
+				result = res;
 			});
+
+
+			expect(error).to.be.null;
+			expect(result.data).to.have.length(5);
+			expect(result.data[0]).to.equal('ee');
+			expect(result.data[1]).to.equal('b');
+			expect(result.data[2]).to.equal('aaa');
+			expect(result.data[3]).to.equal('ccccc');
+			expect(result.data[4]).to.equal('dddd');
 		});
 	});
 
@@ -145,21 +177,25 @@ describe('Schema', function () {
 		it('should leave a unique array unchanged', function () {
 			var data = { data: ['a', 'b', 'c', 'd', 'e'] };
 			uniqueSchema.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res).to.be.a('object');
-				expect(res.data).to.have.length(5);
-				expect(res.data).to.have.all.members(['a', 'b', 'c', 'd', 'e']);
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result).to.be.a('object');
+			expect(result.data).to.have.length(5);
+			expect(result.data).to.have.all.members(['a', 'b', 'c', 'd', 'e']);
 		});
 
 		it('should remove duplicates of values in an array', function () {
 			var data = { data: ['a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', 'd'] };
 			uniqueSchema.validate(data, function (err, res) {
-				expect(err).to.be.null;
-				expect(res).to.be.a('object');
-				expect(res.data).to.have.length(5);
-				expect(res.data).to.have.all.members(['a', 'b', 'c', 'd', 'e']);
+				error = err;
+				result = res;
 			});
+			expect(error).to.be.null;
+			expect(result).to.be.a('object');
+			expect(result.data).to.have.length(5);
+			expect(result.data).to.have.all.members(['a', 'b', 'c', 'd', 'e']);
 		});
 
 	});
