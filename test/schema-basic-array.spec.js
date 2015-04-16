@@ -101,14 +101,16 @@ describe('Schema', function () {
 		var sortDescSchema = new Schema({ data: [{ $type: String, $sort: 'desc' }] });
 		var sortFnSchema = new Schema({ data: [{ $type: String, $sort: sortFn }] });
 
-		var data, customData;
+		// var data, customData;
 
-		before(function() {
-			data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
-			customData = { data: ['a', ] }
-		});
+		// before(function() {
+		// 	data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
+		// 	customData = { data: ['a', ] }
+		// });
 
 		it('should sort data ascending', function () {
+			var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
+
 			sortAscSchema.validate(data, function (err, res) {
 				error = err;
 				result = res;
@@ -123,20 +125,23 @@ describe('Schema', function () {
 		});
 
 		it('should sort data descending', function () {
+			error = result = undefined;
+			var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
 			sortDescSchema.validate(data, function (err, res) {
 				error = err;
 				result = res;
 			});
 			expect(error).to.be.null;
 			expect(result.data).to.have.length(5);
-			expect(result.data[0]).to.equal('aaa');
-			expect(result.data[1]).to.equal('b');
+			expect(result.data[4]).to.equal('aaa');
+			expect(result.data[3]).to.equal('b');
 			expect(result.data[2]).to.equal('ccccc');
-			expect(result.data[3]).to.equal('dddd');
-			expect(result.data[4]).to.equal('ee');
+			expect(result.data[1]).to.equal('dddd');
+			expect(result.data[0]).to.equal('ee');
 		});
 
 		it('should sort data by length', function () {
+			var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
 			sortFnSchema.validate(data, function (err, res) {
 				error = err;
 				result = res;
@@ -152,11 +157,20 @@ describe('Schema', function () {
 
 		it('should not sort data', function () {
 			// console.log(data);
+			var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
+
+			console.log('before: ');
+			console.log(data);
+
 			noSortSchema.validate(data, function (err, res) {
 				// console.log(res);
+				console.log('res: ');
+				console.log(res);
 				error = err;
 				result = res;
 			});
+
+			console.log(result);
 
 
 			expect(error).to.be.null;
