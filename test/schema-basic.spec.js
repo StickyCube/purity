@@ -65,12 +65,6 @@ describe('Schema', function () {
 					new Schema(ValidDefinition);
 				}).not.to.throw();
 			});
-
-			// it('Should not throw when an array of a valid definition is passed', function () {
-			// 	expect(function () {
-			// 		new Schema(validArrayDefinition);
-			// 	}).not.to.throw();
-			// });
 		});
 
 		describe('Schema Validation', function () {

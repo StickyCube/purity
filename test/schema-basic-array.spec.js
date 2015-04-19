@@ -101,13 +101,6 @@ describe('Schema', function () {
 		var sortDescSchema = new Schema({ data: [{ $type: String, $sort: 'desc' }] });
 		var sortFnSchema = new Schema({ data: [{ $type: String, $sort: sortFn }] });
 
-		// var data, customData;
-
-		// before(function() {
-		// 	data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
-		// 	customData = { data: ['a', ] }
-		// });
-
 		it('should sort data ascending', function () {
 			var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
 
@@ -162,6 +155,7 @@ describe('Schema', function () {
 				error = err;
 				result = res;
 			});
+			
 			expect(error).to.be.null;
 			expect(result.data).to.have.length(5);
 			expect(result.data[0]).to.equal('ee');
