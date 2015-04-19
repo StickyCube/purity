@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^2.1.2"
+  },
+  "dependencies": {
+    "mongodb": "^2.0.27"
   }
 }

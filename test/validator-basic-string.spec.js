@@ -1,7 +1,7 @@
 "use strict";
 
 var expect 		= require('chai').expect;
-var Validator 	= require('../lib/validator');
+var Validator = require('../lib/validator');
 
 describe('Validator - String', function () {
 	

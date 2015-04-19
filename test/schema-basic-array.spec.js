@@ -156,23 +156,12 @@ describe('Schema', function () {
 		});
 
 		it('should not sort data', function () {
-			// console.log(data);
 			var data = { data: [ 'ee', 'b', 'aaa', 'ccccc', 'dddd' ] };
 
-			console.log('before: ');
-			console.log(data);
-
 			noSortSchema.validate(data, function (err, res) {
-				// console.log(res);
-				console.log('res: ');
-				console.log(res);
 				error = err;
 				result = res;
 			});
-
-			console.log(result);
-
-
 			expect(error).to.be.null;
 			expect(result.data).to.have.length(5);
 			expect(result.data[0]).to.equal('ee');
