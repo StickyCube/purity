@@ -1,33 +1,26 @@
 # Purity
 
-## *In Progress*
-
-The project is still in progress, the following features are still to be added. A release will be available through npm in the near future.
-
-- [ ] User defined types
-- [x] Re-using existing schemas in the definition of new ones
-- [ ] Support for mongo ObjectID types
-- [ ] Support for Mixed types
-- [ ] Schema options 
-	* strict mode to remove ubndeclared fields
-- [ ] Support for more complex array definitions
-
-Purity is a simple, intuitive data cleansing utility for node.js
+Purity is a simple, intuitive JSON data cleansing utility for node.js
 
 ```javascript
-var Schema = require('purity').Schema;
+var Purity = require('purity').Purity;
+var person = new Purity({ name: { $type: String, $required: true }, age: { $type: Number, $default: 'Unknown' } });
 
-var personSchema = new Schema({ name: { $type: String, $required: true } });
+var data = { name: 'John Doe' };
 
-var validPerson = { name: 'John' };
-personSchem.validate(validPerson, function (err, data) {
-	console.log(data); // { name: 'John' }
+person.cleanse(data, function (err, res) {
+	console.log(res);
+	// { name: 'John Doe', age: 'Unknown' };
 });
 
-var invalidPerson = { age: 23 };
-personSchema.validate(invalidPerson, function (err, data) {
-	console.log(err.missing) // ['name']
-});
+```
+
+Create complex schemas from basic building blocks
+
+```javascript
+
+var person = new Purity({ name: { $type: String, $required: true }, email: { $type:  } });
+
 ```
 
 
