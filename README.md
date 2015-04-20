@@ -2,7 +2,7 @@
 
 ## TL;DR documentation:
 
-Schema is a simple, intuitive JSON data cleansing utility for node.js
+Purity is a simple, intuitive JSON data cleansing utility for node.js
 
 ```javascript
 var Schema = require('purity').Schema;
