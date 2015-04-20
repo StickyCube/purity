@@ -1,12 +1,12 @@
-# Purity
+# Schema
 
 ## TL;DR documentation:
 
-Purity is a simple, intuitive JSON data cleansing utility for node.js
+Schema is a simple, intuitive JSON data cleansing utility for node.js
 
 ```javascript
-var Purity = require('purity').Purity;
-var person = new Purity({ name: { $type: String, $required: true }, age: { $type: Number, $default: 'Unknown' } });
+var Schema = require('purity').Schema;
+var person = new Schema({ name: { $type: String, $required: true }, age: { $type: Number, $default: 'Unknown' } });
 
 var data = { name: 'John Doe' };
 
@@ -25,7 +25,7 @@ var ObjectID = require('mongodb').ObjectID;
 
 var options = { strict: true };
 
-var player = new Purity({
+var player = new Schema({
 	name: { $type: String, $required: true },
 	lastOnline: { $type: Number, $default: Date.now },
 	emails: [{ $type: String, $tolower: true }, { $unique: true }]
@@ -67,6 +67,8 @@ a schema maps field names to data types:
 or simply
 
 `var person = new Schema({ name: String });`
+
+
 
 #### General Options
 

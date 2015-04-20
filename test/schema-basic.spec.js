@@ -1,7 +1,7 @@
 "use strict";
 
 var expect 	= require('chai').expect;
-var Schema 	= require('../index').Purity;
+var Schema 	= require('../index').Schema;
 
 var ValidDefinition = { name: { $type: String } };
 var validArrayDefinition = { name: [{ $type: String }] }

@@ -2,6 +2,6 @@
 
 module.exports = {
 
-	Purity: require('./lib/schema')
+	Schema: require('./lib/schema')
 
 };

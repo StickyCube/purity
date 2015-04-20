@@ -1,4 +1,4 @@
-var Schema = require('../index').Purity;
+var Schema = require('../index').Schema;
 var expect = require('chai').expect;
 
 describe('Schema - strict option', function () {

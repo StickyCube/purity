@@ -1,7 +1,7 @@
 "use strict";
 
 var expect = require('chai').expect;
-var Schema = require('../index').Purity;
+var Schema = require('../index').Schema;
 
 describe('Schema', function () {
 	var error, result;

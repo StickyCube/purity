@@ -4,7 +4,7 @@ function Test (data) {
 
 Test.prototype.constructor = Test;
 
-var Schema = require('../index').Purity;
+var Schema = require('../index').Schema;
 var expect = require('chai').expect;
 
 describe('Schema - $castTo option', function () {
