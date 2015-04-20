@@ -1,5 +1,7 @@
 # Purity
 
+## TL;DR documentation:
+
 Purity is a simple, intuitive JSON data cleansing utility for node.js
 
 ```javascript
@@ -15,14 +17,56 @@ person.cleanse(data, function (err, res) {
 
 ```
 
-Create complex schemas from basic building blocks
+Validate complex data structures with simple, easy-to-read, highly configurable schemas.
 
 ```javascript
 
-var person = new Purity({ name: { $type: String, $required: true }, email: { $type:  } });
+var ObjectID = require('mongodb').ObjectID;
 
+var options = { strict: true };
+
+var player = new Purity({
+	name: { $type: String, $required: true },
+	lastOnline: { $type: Number, $default: Date.now },
+	emails: [{ $type: String, $tolower: true }, { $unique: true }]
+	scores: [{ $type: Number, $cast: true }],
+	groups: [{ $type: String, $castTo: ObjectID }, { $purge: true }]
+}, options);
+
+var data = {
+	name: 'Jane Doe',
+	emails: [ 'Jane.Doe@mail.com', 'jane.DOE@mail.com' ],
+	scores: [123, 456, '789'],
+	groups: ['1234567890abcdef00000000', '1234567890abcdef00000001', '1234abcd'],
+	address: '123 Some Street'
+};
+
+player.cleanse(data, function (err, res) {
+	console.log(res);
+	/**
+	 * {
+	 *		name: 'Jane Doe',
+	 *		emails: ['jane.doe@mail.com'],
+	 *		scores: [123, 456, 789],
+	 *		groups: [ObjectID(1234567890abcdef00000000), ObjectID(1234567890abcdef00000001)]
+	 * }
+	 */
+});
 ```
 
+## Usage
+
+`var Schema = require('purity').Schema`
+
+#### Basic definitions
+
+a schema maps field names to data types:
+
+`var person = new Schema({ name: { $type: String } });`
+
+or simply
+
+`var person = new Schema({ name: String });`
 
 #### General Options
 

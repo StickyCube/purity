@@ -51,5 +51,20 @@ describe('Advanced arrays 1', function () {
 			expect(error).to.be.null;
 			expect(result.data).to.have.length(3);
 		});
+
+		it('should not validate when one bad element is present', function () {
+			var data = { data: [ { name: 'foo', age: '1' }, { name: 'bar', age: 1 } ] };
+			schema.validate(data, function (e, r) {
+				console.log(arguments);
+				error = e;
+				result = r;
+			});
+
+			expect(error).to.be.a('object');
+			expect(error.invalid).to.have.length(1);
+			expect(error.invalid).to.have.all.members(['data.age']);
+
+		});
+
 	});
 });
