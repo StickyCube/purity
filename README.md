@@ -6,7 +6,10 @@ Purity is a simple, intuitive JSON data cleansing utility for node.js
 
 ```javascript
 var Schema = require('purity').Schema;
-var person = new Schema({ name: { $type: String, $required: true }, age: { $type: Number, $default: 'Unknown' } });
+var person = new Schema({ 
+	name: { $type: String, $required: true }, 
+	age: { $type: Number, $default: 'Unknown' } 
+});
 
 var data = { name: 'John Doe' };
 
@@ -48,7 +51,10 @@ player.cleanse(data, function (err, res) {
 	 *		name: 'Jane Doe',
 	 *		emails: ['jane.doe@mail.com'],
 	 *		scores: [123, 456, 789],
-	 *		groups: [ObjectID(1234567890abcdef00000000), ObjectID(1234567890abcdef00000001)]
+	 *		groups: [
+	 *			ObjectID(1234567890abcdef00000000), 
+	 *			ObjectID(1234567890abcdef00000001)
+	 *		]
 	 * }
 	 */
 });
