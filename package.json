@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"mocha\""
   },
-  "author": "",
+  "author": "Will Knowles",
+  "email": "will.jk01@gmail.com",
   "license": "ISC",
   "devDependencies": {
     "chai": "^2.1.2"

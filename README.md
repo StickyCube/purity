@@ -63,7 +63,20 @@ player.cleanse(data, function (err, res) {
 
 ## Usage
 
-`var Schema = require('purity').Schema`
+`npm install purity`
+
+```javascript
+var Schema = require('purity').Schema;
+
+var schema = new Schema({ message: { $type: String, $tolower: true } });
+
+var data = { message: 'hElLo, WoRlD!' };
+
+schema.cleanse(data, function (err, res) {
+	console.log(res); // { message: 'hello, world!' }
+});
+
+```
 
 #### Basic definitions
 
@@ -128,9 +141,29 @@ var schema = new Schema({
 
 #### Data Types
 
-currently supported data types are `String | Number | Boolean`
-support for `Date` will be added in a future release
+currently supported data types are `String | Number | Boolean`.
 
+support for `Date` will be added in a future release.
+
+
+#### Re-using schemas
+
+Schemas can be re-used in new definitions
+
+```javascript
+
+var addressSchema = { 
+	houseNumber: Number, 
+	street: String 
+};
+
+var personSchema = { 
+	name: String, 
+	age: Number, 
+	address: addressSchema 
+};
+
+```
 
 
 ## Schema options
@@ -185,3 +218,4 @@ These options can be combined with any data type.
 * `$tofixed: Number > 0, < 20` - *round to a fixed number of decimal points*
 * `$abs: Boolean` - *convert to absolute value*
 * `$neg: Boolean` - *convert to negative value*
+
