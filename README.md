@@ -5,6 +5,7 @@
 Purity is a simple, intuitive JSON data cleansing utility for node.js
 
 ```javascript
+
 var Schema = require('purity').Schema;
 var person = new Schema({ 
 	name: { $type: String, $required: true }, 
@@ -66,32 +67,98 @@ player.cleanse(data, function (err, res) {
 
 #### Basic definitions
 
-a schema maps field names to data types:
+A schema maps field names to data types:
 
 `var person = new Schema({ name: { $type: String } });`
 
-or simply
+Or simply
 
 `var person = new Schema({ name: String });`
 
 
+Schema fields can be configured with options to mutate and confine incoming data. The following will convert the 'name' field of any input to lower case and only allow strings of less than 5 characters.
 
-#### General Options
+`var schema = new Schema({ name: { $type: String, $tolower: true, $maxlength: 5 } });`
+
+
+#### Arrays
+
+Coping with arrays is easy, simply place the field's definition in an array.
+
+`var schema = new Schema({ numbers: [Number] })`
+
+Array specific options can be placed alongside the field definition or as the second element in the array.
+
+#### Errors
+
+A schema will parse all fields in it's definition but will produce errors for each data point which does not meet the requirements.
+
+```javascript
+
+var schema = new Schema({
+	name: { $type: String, $minlength: 6 },
+	age: { $type: Number, $required: true },
+	houseNumber: { $type: Number, $cast: true }
+});
+
+var data = { name: 'John', houseNumber: '111' };
+
+schema.cleanse(data, function (err, res) {
+	console.log(err) // { invalid: ['name'], missing: ['age'] }
+	console.log(res) // { name: 'John', houseNumber: 111 }
+});
+
+```
+
+#### Nested Objects
+
+To declare nested fields, simply nest the definitions inside the required field name.
+
+```javascript
+
+var schema = new Schema({
+	name: String,
+	address: {
+		houseNumber: Number,
+		street: String
+	}
+});
+```
+
+
+#### Data Types
+
+currently supported data types are `String | Number | Boolean`
+support for `Date` will be added in a future release
+
+
+
+## Schema options
+
+Options may be passed as the second argument to a Schmea's constructor.
+
+* `strict: Boolean` - *[default: false] - strip any undeclared fields from the input data*
+
+## General Options
 
 ###### `{ $type: Any }`
 
-* `$required: Boolean` - *Validation will fail if the field is null or undefined*
-* `$default: Any|Function` - *Replaces this field if it is null or undefined*
-* `$cast: Boolean` - *Cast to the required type*
+These options can be combined with any data type.
+
+* `$required: Boolean` - *[default: false] Validation will fail if the field is null or undefined*
+* `$default: Any|Function` - *Replaces this field with a default if it is null or undefined. If $default is a function, the return value will be used*
+* `$cast: Boolean` - *[default: false] Cast to the required $type*
+* `$castTo: Boolean` - *Cast to a different type - the data is passed to the constructor of the new type*
+* `$mutate: Function` - *A function which will mutate and return the new value*
 
 
 #### Array Options
 
 ###### `[ { $type: Any } ]`
 
-* `$purge: Boolean` - *Remove invalid element from the array instead of failing validation*
-* `$unique: Boolean` - *Remove duplicates from the array; (primitives only)*
-* `$sort: 'asc|desc'|Function` - *Sort elements ascending/descending or by a custom function*
+* `$purge: Boolean` - *Removes invalid elements from the array instead of producing errors*
+* `$unique: Boolean` - *Remove duplicates from the array [currently this option will only work with primitive values `String|Number|Boolean`]*
+* `$sort: 'asc'|'desc'|Function` - *Sort elements ascending/descending or by a given function*
 
 
 #### String Options
