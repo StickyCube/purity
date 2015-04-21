@@ -1,6 +1,6 @@
 # Purity
 
-## TL;DR documentation:
+## TLDR documentation:
 
 Purity is a simple, intuitive JSON data cleansing utility for node.js
 
@@ -63,7 +63,9 @@ player.cleanse(data, function (err, res) {
 
 ## Usage
 
-`npm install purity`
+```
+npm install purity
+```
 
 ```javascript
 var Schema = require('purity').Schema;
@@ -82,23 +84,37 @@ schema.cleanse(data, function (err, res) {
 
 A schema maps field names to data types:
 
-`var person = new Schema({ name: { $type: String } });`
+```javascript
+
+var person = new Schema({ name: { $type: String } });
+```
 
 Or simply
 
-`var person = new Schema({ name: String });`
+```javascript
+
+var person = new Schema({ name: String });
+```
 
 
 Schema fields can be configured with options to mutate and confine incoming data. The following will convert the 'name' field of any input to lower case and only allow strings of less than 5 characters.
 
-`var schema = new Schema({ name: { $type: String, $tolower: true, $maxlength: 5 } });`
+```javascript
+
+var schema = new Schema({ 
+	name: { $type: String, $tolower: true, $maxlength: 5 }
+});`
+```
 
 
 #### Arrays
 
 Coping with arrays is easy, simply place the field's definition in an array.
 
-`var schema = new Schema({ numbers: [Number] })`
+```javascript
+
+var schema = new Schema({ numbers: [Number] });
+```
 
 Array specific options can be placed alongside the field definition or as the second element in the array.
 
@@ -120,7 +136,6 @@ schema.cleanse(data, function (err, res) {
 	console.log(err) // { invalid: ['name'], missing: ['age'] }
 	console.log(res) // { name: 'John', houseNumber: 111 }
 });
-
 ```
 
 #### Nested Objects
@@ -152,16 +167,16 @@ Schemas can be re-used in new definitions
 
 ```javascript
 
-var addressSchema = { 
+var addressSchema = new Schema({ 
 	houseNumber: Number, 
 	street: String 
-};
+});
 
-var personSchema = { 
+var personSchema = new Schema({ 
 	name: String, 
 	age: Number, 
 	address: addressSchema 
-};
+});
 
 ```
 
