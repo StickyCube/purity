@@ -1,8 +1,8 @@
 # Purity
 
-## TLDR documentation:
-
 Purity is a simple, intuitive JSON data cleansing utility for node.js
+
+## TLDR documentation:
 
 ```javascript
 
@@ -178,6 +178,19 @@ var personSchema = new Schema({
 	address: addressSchema 
 });
 
+```
+
+## Config options
+
+Some options can be configured globally,
+
+* `strict` - turn on/off 'strict' schemas by default (see below) [defaults to false]
+
+```javascript
+
+purity.config({
+	strict: true
+});
 ```
 
 

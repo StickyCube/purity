@@ -1,19 +1,21 @@
 {
   "name": "purity",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "index.js",
   "keywords": [
     "data",
     "manipulation",
     "cleanse",
-    "quality"
+    "quality",
+    "schema"
   ],
   "scripts": {
     "test": "echo \"mocha\""
   },
   "author": "Will Knowles",
   "email": "will.jk01@gmail.com",
+  "homepage": "https://github.com/StickyCube/purity",
   "license": "MIT",
   "devDependencies": {
     "chai": "^2.1.2"

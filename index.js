@@ -13,5 +13,6 @@
  */
 
 module.exports = {
-	Schema: require('./lib/schema')
+	Schema: require('./lib/schema'),
+	config: require('./lib/config')
 };
