@@ -1,6 +1,6 @@
 {
   "name": "purity",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "keywords": [
@@ -15,7 +15,7 @@
   },
   "author": "Will Knowles",
   "email": "will.jk01@gmail.com",
-  "homepage": "https://github.com/StickyCube/purity",
+  "url": "https://github.com/StickyCube/purity",
   "license": "MIT",
   "devDependencies": {
     "chai": "^2.1.2"
