@@ -1,7 +1,10 @@
 {
   "name": "purity",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
+  "author": "Will Knowles",
+  "email": "will.jk01@gmail.com",
+  "license": "MIT",
   "main": "index.js",
   "keywords": [
     "data",
@@ -13,10 +16,13 @@
   "scripts": {
     "test": "echo \"mocha\""
   },
-  "author": "Will Knowles",
-  "email": "will.jk01@gmail.com",
-  "url": "https://github.com/StickyCube/purity",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StickyCube/purity"
+  },
+  "bugs": {
+    "url": "https://github.com/StickyCube/purity/issues"
+  },
   "devDependencies": {
     "chai": "^2.1.2"
   }
