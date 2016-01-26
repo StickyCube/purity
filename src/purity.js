@@ -14,6 +14,10 @@ let numberType = require('./types/number-type');
 let booleanType = require('./types/boolean-type');
 let dateType = require('./types/date-type');
 
+// if env !== production
+module.exports.DataTypeValidator = DataTypeValidator;
+// endif
+
 DataTypeValidator.define('String', stringType);
 DataTypeValidator.define('Number', numberType);
 DataTypeValidator.define('Boolean', booleanType);

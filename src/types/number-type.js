@@ -5,8 +5,17 @@ function isNan (v) {
 }
 
 module.exports = {
-  cast: val => parseFloat(val),
-  checkType: val => !isNan(val),
+  cast: val => {
+    if (typeof val === 'boolean') {
+      return val ? 1 : 0;
+    }
+
+    let parsed = parseFloat(val);
+    return isNan(parsed)
+      ? 0
+      : parsed;
+  },
+  checkType: val => typeof val === 'number' && !isNan(val),
   aliases: [Number],
   assertions: {
     $gt: (act, opt) => act > opt,
@@ -17,6 +26,6 @@ module.exports = {
     $neq: (act, opt) => act !== opt
   },
   mutators: {
-    $tofixed: (val, opt) => val.tofixed(opt)
+    $tofixed: (val, opt) => val.toFixed(opt)
   }
-}
+};

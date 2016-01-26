@@ -4,9 +4,8 @@ let squish = require('object-squish');
 let ok = require('ok-js');
 
 let ValidationResult = require('./validation-result');
-
-let errors = require('./errors');
-let dataTypes = require('./data-types');
+let DataValidationError = require('./data-validation-error');
+let DataTypeValidator = require('./data-type-validator');
 
 function isEndpoint (val) {
   return (typeof val === 'object') && '$type' in val;
@@ -74,7 +73,7 @@ class SchemaValidator {
 
       validators[path] = isSchema(value) || Array.isArray(value)
         ? new SchemaValidator(value, { path: path })
-        : dataTypes.create(value, path);
+        : DataTypeValidator.create(value, path);
 
       return validators;
     }, {});
@@ -84,7 +83,7 @@ class SchemaValidator {
     let isArray = Array.isArray(data);
 
     if (this.options.isArray !== isArray) {
-      let err = errors.create('invalid', { path: this.options.path || '' });
+      let err = DataValidationError.create('invalid', { path: this.options.path || '' });
       return Promise.reject(err);
     }
 
