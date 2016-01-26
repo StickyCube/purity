@@ -11,13 +11,34 @@
     "schema"
   ],
   "scripts": {
-    "test": "echo \"mocha\""
+    "test": "grunt test"
+  },
+  "semistandard": {
+    "globals": [
+      "describe",
+      "it",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach"
+    ]
   },
   "author": "Will Knowles",
   "email": "will.jk01@gmail.com",
   "url": "https://github.com/StickyCube/purity",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^2.1.2"
+    "chai": "^2.3.0",
+    "grunt": "^0.4.5",
+    "grunt-mocha-istanbul": "^3.0.1",
+    "istanbul": "^0.4.2",
+    "load-grunt-config": "^0.19.1",
+    "mocha": "^2.3.4",
+    "rewire": "^2.5.1",
+    "sinon": "^1.17.2"
+  },
+  "dependencies": {
+    "object-squish": "1.1.0",
+    "ok-js": "0.2.2"
   }
 }

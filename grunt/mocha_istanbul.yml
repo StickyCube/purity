@@ -1,0 +1,5 @@
+coverage:
+  src: spec
+  options:
+    mask: '**/*.spec.js'
+    root: src/
