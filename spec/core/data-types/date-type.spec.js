@@ -2,7 +2,7 @@
 
 let expect = require('chai').expect;
 let sinon = require('sinon');
-let purity = require('../../src/purity');
+let purity = require('../../../src/purity');
 
 let actual = null;
 let expected = null;

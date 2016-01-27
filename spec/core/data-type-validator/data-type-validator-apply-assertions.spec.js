@@ -24,7 +24,7 @@ let definition = {
 
 describe('#_applyAssertions', function () {
   before(function () {
-    DataTypeValidator = rewire('../../src/data-type-validator');
+    DataTypeValidator = rewire('../../../src/data-type-validator');
     Validator = DataTypeValidator.define('Number', definition);
   });
 

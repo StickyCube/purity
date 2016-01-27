@@ -11,7 +11,7 @@ var onResolve = null;
 var onReject = null;
 
 beforeEach(function () {
-  DataTypeValidator = rewire('../../src/data-type-validator');
+  DataTypeValidator = rewire('../../../src/data-type-validator');
   onResolve = sinon.spy();
   onReject = sinon.spy();
 });

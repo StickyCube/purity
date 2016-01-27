@@ -8,7 +8,7 @@ let actual = null;
 let expected = null;
 
 beforeEach(function () {
-  DataTypeValidator = rewire('../../src/data-type-validator');
+  DataTypeValidator = rewire('../../../src/data-type-validator');
 });
 
 describe('statics', function () {

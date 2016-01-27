@@ -22,7 +22,7 @@ let definition = {
 
 describe('#_validateData', function () {
   before(function () {
-    DataTypeValidator = rewire('../../src/data-type-validator');
+    DataTypeValidator = rewire('../../../src/data-type-validator');
     Validator = DataTypeValidator.define('Number', definition);
   });
 
@@ -53,14 +53,14 @@ describe('#_validateData', function () {
       validator = new Validator({ $type: Number });
     });
 
-    it('Should attempt to cast the data', function (done) {
+    it('Should not attempt to cast the data', function (done) {
       validator
         .validate('12345')
         .then(onResolve, onReject)
         .then(function () {
           expect(onResolve.called).to.be.true;
           expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args[0].value).to.eql(12345);
+          expect(onResolve.firstCall.args[0].value).to.eql('12345');
           done();
         });
     });

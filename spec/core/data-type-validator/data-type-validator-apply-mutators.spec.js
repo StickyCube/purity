@@ -23,7 +23,7 @@ let definition = {
 
 describe('#_applyMutators', function () {
   before(function () {
-    DataTypeValidator = rewire('../../src/data-type-validator');
+    DataTypeValidator = rewire('../../../src/data-type-validator');
     Validator = DataTypeValidator.define('String', definition);
   });
 

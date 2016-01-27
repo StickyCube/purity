@@ -2,7 +2,7 @@
 
 let expect = require('chai').expect;
 let sinon = require('sinon');
-let purity = require('../../src/purity');
+let purity = require('../../../src/purity');
 
 let actual = null;
 let expected = null;
@@ -38,33 +38,27 @@ describe('Number Type Validator', function () {
       expect(actual).to.eql(expected);
     });
 
-    it('Should cast non numeric string values to 0', function () {
+    it('Should fail to cast non numeric string values', function () {
       actual = validator.cast('foo');
-      expected = 0;
+      expected = NaN;
       expect(actual).to.eql(expected);
     });
 
-    it('Should cast null values to 0', function () {
+    it('Should fail to cast null values', function () {
       actual = validator.cast(null);
-      expected = 0;
+      expected = NaN;
       expect(actual).to.eql(expected);
     });
 
-    it('Should cast undefined values to 0', function () {
+    it('Should fail to cast undefined values', function () {
       actual = validator.cast(undefined);
-      expected = 0;
+      expected = NaN;
       expect(actual).to.eql(expected);
     });
 
-    it('Should cast boolean values to 1 when true', function () {
+    it('Should fail to cast boolean values', function () {
       actual = validator.cast(true);
-      expected = 1;
-      expect(actual).to.eql(expected);
-    });
-
-    it('Should cast boolean values to 0 when false', function () {
-      actual = validator.cast(false);
-      expected = 0;
+      expected = NaN;
       expect(actual).to.eql(expected);
     });
   });

@@ -5,11 +5,11 @@ let SchemaValidator = require('./schema-validator');
 module.exports =
 class Schema {
   constructor (definition, options) {
-    this.schema = new SchemaValidator(definition, options);
+    this.validator = new SchemaValidator(definition, options);
   }
 
   _validateUsingCallback (data, done) {
-    this.schema.validate(data)
+    this.validator.validate(data)
       .catch(err => done(err))
       .then(result => done(null, result.value));
   }

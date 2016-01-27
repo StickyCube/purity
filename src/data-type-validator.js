@@ -153,7 +153,7 @@ class DataTypeValidator {
   }
 
   _validateData (data, options) {
-    if (!this._hasOption('$cast') || this._option('$cast')) {
+    if (this._option('$cast')) {
       data = this.cast(data);
     }
 

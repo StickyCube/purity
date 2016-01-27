@@ -1,21 +1,10 @@
 'use strict';
 
-function isNan (v) {
-  return (typeof v === 'number') && v !== v;
-}
+const utils = require('../utils');
 
 module.exports = {
-  cast: val => {
-    if (typeof val === 'boolean') {
-      return val ? 1 : 0;
-    }
-
-    let parsed = parseFloat(val);
-    return isNan(parsed)
-      ? 0
-      : parsed;
-  },
-  checkType: val => typeof val === 'number' && !isNan(val),
+  cast: val => parseFloat(val),
+  checkType: val => !utils.isNan(val),
   aliases: [Number],
   assertions: {
     $gt: (act, opt) => act > opt,
