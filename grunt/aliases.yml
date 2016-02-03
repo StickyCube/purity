@@ -1,2 +1,5 @@
 test:
   - mocha_istanbul:coverage
+
+default:
+  - watch:scripts

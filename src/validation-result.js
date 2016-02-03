@@ -1,8 +1,7 @@
 'use strict';
 
-let ok = require('ok-js');
+const ok = require('ok-js');
 
-module.exports =
 class ValidationResult {
   constructor (options) {
     this.options = options || {};
@@ -57,4 +56,6 @@ class ValidationResult {
 
     return data.map(ValidationResult.inflateObject);
   }
-};
+}
+
+module.exports = ValidationResult;

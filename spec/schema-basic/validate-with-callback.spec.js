@@ -1,15 +1,14 @@
 'use strict';
 
-let expect = require('chai').expect;
-let sandbox = require('sinon').sandbox.create();
+var expect = require('chai').expect;
 
-let Schema = require('../../../src/purity').Schema;
+var purity = require('../../dist/purity');
 
 describe('Using callback api', function () {
-  let schema = null;
+  var schema = null;
 
   beforeEach(function () {
-    schema = new Schema({
+    schema = new purity.Schema({
       foo: Number,
       bar: String
     });

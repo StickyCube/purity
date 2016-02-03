@@ -2,13 +2,13 @@
 
 const squish = require('object-squish');
 const ok = require('ok-js');
-
 const utils = require('./utils');
+const Promise = utils.Promise;
+
 const ValidationResult = require('./validation-result');
-const DataValidationError = require('./data-validation-error');
+const DataValidationError = require('./validation-error');
 const DataTypeValidator = require('./data-type-validator');
 
-module.exports =
 class SchemaValidator {
   constructor (definition, options) {
     this.definition = null;
@@ -67,36 +67,34 @@ class SchemaValidator {
 
       validators[path] = utils.isSchema(value) || utils.isArray(value)
         ? new SchemaValidator(value, { path: path })
-        : DataTypeValidator.create(value, path);
+        : DataTypeValidator.create(value, { path: path });
 
       return validators;
     }, {});
   }
 
   validate (data) {
-    let isArray = utils.isArray(data);
+    let array = utils.isArray(data);
 
-    if (isArray !== !!this.options.isArray) {
+    if (array !== !!this.options.isArray) {
       let err = DataValidationError.create('invalid', { path: this.options.path || '' });
       return Promise.reject(err);
     }
 
-    if (!isArray) {
+    if (!array) {
       data = [data];
     }
 
     let promises = this._createPromises(data);
-    let deferred = Promise.defer();
+    // let deferred = Promise.defer();
 
-    Promise.all(promises)
-      .catch(err => deferred.reject(err))
+    return Promise.all(promises)
+      // .catch(err => deferred.reject(err))
       .then(results => {
         let result = this.inflate(results);
         let opt = { value: result, path: this.options.path };
-        deferred.resolve(new ValidationResult(opt));
+        return new ValidationResult(opt);
       });
-
-    return deferred.promise;
   }
 
   inflate (results) {
@@ -104,4 +102,6 @@ class SchemaValidator {
       ? ValidationResult.inflateArray(results)
       : ValidationResult.inflateObject(results);
   }
-};
+}
+
+module.exports = SchemaValidator;

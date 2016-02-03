@@ -1,8 +1,8 @@
 'use strict';
 
-let SchemaValidator = require('./schema-validator');
+const SchemaValidator = require('./schema-validator');
+const Promise = require('./utils').Promise;
 
-module.exports =
 class Schema {
   constructor (definition, options) {
     this.validator = new SchemaValidator(definition, options);
@@ -15,14 +15,12 @@ class Schema {
   }
 
   _validateUsingPromise (data) {
-    let deferred = Promise.defer();
-
-    this._validateUsingCallback(data, (err, res) => {
-      if (err) return deferred.reject(err);
-      deferred.resolve(res);
+    return new Promise((resolve, reject) => {
+      this._validateUsingCallback(data, (err, res) => {
+        if (err) return reject(err);
+        resolve(res);
+      });
     });
-
-    return deferred.promise;
   }
 
   validate (data, done) {
@@ -30,4 +28,6 @@ class Schema {
       ? this._validateUsingCallback(data, done)
       : this._validateUsingPromise(data);
   }
-};
+}
+
+module.exports = Schema;

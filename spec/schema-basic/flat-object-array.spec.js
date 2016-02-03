@@ -1,15 +1,15 @@
 'use strict';
 
-let expect = require('chai').expect;
-let sandbox = require('sinon').sandbox.create();
+var expect = require('chai').expect;
+var sinon = require('sinon');
 
-let Schema = require('../../../src/purity').Schema;
+var purity = require('../../dist/purity');
 
-let onResolve = sandbox.stub();
-let onReject = sandbox.stub();
+var onResolve = sinon.stub();
+var onReject = sinon.stub();
 
 describe('Basic value array schema', function () {
-  let schema = null;
+  var schema = null;
 
   afterEach(function () {
     onResolve.reset();
@@ -18,7 +18,7 @@ describe('Basic value array schema', function () {
 
   describe('When not using the $type syntax', function () {
     beforeEach(function () {
-      schema = new Schema([{ foo: Number, bar: String }]);
+      schema = new purity.Schema([{ foo: Number, bar: String }]);
     });
 
     it('Should reject a non array value of a valid object', function (done) {
@@ -81,7 +81,7 @@ describe('Basic value array schema', function () {
 
   describe('When using the $type syntax', function () {
     beforeEach(function () {
-      schema = new Schema([{
+      schema = new purity.Schema([{
         foo: { $type: Number },
         bar: { $type: String }
       }]);
@@ -146,17 +146,17 @@ describe('Basic value array schema', function () {
   });
 
   describe('When using an existing (single value) Schema', function () {
-    let reference = null;
+    var reference = null;
 
     before(function () {
-      reference = new Schema({
+      reference = new purity.Schema({
         foo: { $type: Number },
         bar: { $type: String }
       });
     });
 
     beforeEach(function () {
-      schema = new Schema([reference]);
+      schema = new purity.Schema([reference]);
     });
 
     it('Should reject a non array value of a valid object', function (done) {
@@ -218,17 +218,17 @@ describe('Basic value array schema', function () {
   });
 
   describe('When using an existing (single value) Schema', function () {
-    let reference = null;
+    var reference = null;
 
     before(function () {
-      reference = new Schema([{
+      reference = new purity.Schema([{
         foo: { $type: Number },
         bar: { $type: String }
       }]);
     });
 
     beforeEach(function () {
-      schema = new Schema(reference);
+      schema = new purity.Schema(reference);
     });
 
     it('Should reject a non array value of a valid object', function (done) {

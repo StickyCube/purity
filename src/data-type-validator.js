@@ -1,104 +1,32 @@
 'use strict';
 
-let ValidationResult = require('./validation-result');
-let DataValidationError = require('./data-validation-error');
+
+const ValidationResult = require('./validation-result');
+const DataValidationError = require('./validation-error');
+const DataTransform = require('./data-transform');
+const types = require('./known-types');
+
+const utils = require('./utils');
+const Promise = utils.Promise;
+const Map = utils.Map;
+
+let cache = new Map();
 
 class DataTypeValidator {
-  static _createClass (opt) {
-    return class extends DataTypeValidator {
-      constructor () {
-        super(...arguments);
-        this.assertions = opt.assertions || {};
-        this.mutators = opt.mutators || {};
-      }
 
-      checkType () {
-        return typeof opt.checkType === 'function'
-          ? opt.checkType(...arguments)
-          : super.checkType(...arguments);
-      }
-
-      cast () {
-        return typeof opt.cast === 'function'
-          ? opt.cast(...arguments)
-          : super.cast(...arguments);
-      }
-    };
-  }
-
-  static _getTypeWithAlias (alias) {
-    let types = DataTypeValidator._types;
-
-    for (let i = 0; i < types.length; i += 1) {
-      let type = types[i];
-
-      if (type.alias === alias) {
-        return type.Validator;
-      }
-    }
-
-    return null;
-  }
-
-  static create (definition, path) {
-    if (typeof definition !== 'object') {
-      definition = { $type: definition };
-    }
-
-    let type = definition.$type;
-    let Validator = DataTypeValidator._getTypeWithAlias(type);
-
-    if (!Validator) {
-      throw new Error(`Data type could not be found for the alias: ${type}`);
-    }
-
-    return new Validator(definition, path || '');
-  }
-
-  static define (name, options) {
-    let types = DataTypeValidator._types;
-    let Types = DataTypeValidator.Types;
-
-    if (name in Types) {
-      throw new Error(`A data type with name: ${name} is already defined.`);
-    }
-
-    let id = Symbol(name);
-    let Validator = DataTypeValidator._createClass(options);
-
-    options.aliases = options.aliases || [];
-    options.aliases.push(name);
-    options.aliases.push(id);
-
-    Types[name] = id;
-
-    options.aliases.forEach(alias => {
-      // throw if the alias is in use
-      let alreadyExists = DataTypeValidator._getTypeWithAlias(alias);
-
-      if (alreadyExists) {
-        throw new Error(`A type with alias ${alias} is already defined`);
-      }
-
-      types.push({ alias: alias, Validator: Validator });
-    });
-
-    return Validator;
-  }
-
-  constructor (definition, path) {
-    this.path = path || '';
+  constructor (definition, config, options) {
     this.definition = definition;
-    this.assertions = {};
-    this.mutators = {};
+    this.config = config;
+    this.options = options;
+
+    this.transform = this._setupTransforms();
+    this.assertions = this._setupAssertions();
   }
 
-  checkType () {
-    return true;
-  }
-
-  cast (v) {
-    return v;
+  checkType (value) {
+    return this.config.checkType
+      ? this.config.checkType(value)
+      : true;
   }
 
   validate (data, opt) {
@@ -106,12 +34,31 @@ class DataTypeValidator {
 
     let options = {
       index: opt.index,
-      path: this.path
+      path: this.options.path
     };
 
     return data == null
       ? this._validateMissing(data, options)
       : this._validateData(data, options);
+  }
+
+  _setupTransforms () {
+    let transform = this._option('$transform') || [];
+    let type = this._option('$type');
+    let id = types.resolve(type);
+    return DataTransform.parse(transform, id);
+  }
+
+  _setupAssertions () {
+    let assertions = this.config.assertions || {};
+    return Object
+      .keys(assertions)
+      .filter(key => this._hasOption(key))
+      .reduce((arr, key) => {
+        let opts = this._option(key);
+        let fn = assertions[key];
+        return [{ opts: opts, fn: fn }, ...arr];
+      }, []);
   }
 
   _hasOption (name) {
@@ -124,14 +71,13 @@ class DataTypeValidator {
 
   _getDefaultValue () {
     let defaultValue = this._option('$default');
-
     return typeof defaultValue === 'function'
       ? defaultValue()
       : defaultValue;
   }
 
   _validationError (type) {
-    return DataValidationError.create(type, { path: this.path });
+    return DataValidationError.create(type, { path: this.options.path });
   }
 
   _validateMissing (data, options) {
@@ -157,64 +103,65 @@ class DataTypeValidator {
       data = this.cast(data);
     }
 
-    let deferred = Promise.defer();
-
-    this
-      ._applyAssertions(data)
-      .catch(err => deferred.reject(err))
-      .then(() => {
-        options.value = this._applyMutators(data);
-        deferred.resolve(new ValidationResult(options));
-      });
-
-    return deferred.promise;
+    return new Promise((resolve, reject) => {
+      this
+        ._applyAssertions(data)
+        .catch(reject)
+        .then(() => {
+          options.value = this.transform.evaluate(data);
+          resolve(new ValidationResult(options));
+        });
+    });
   }
 
   _applyAssertions (data) {
-    let err;
-
     if (!this.checkType(data)) {
-      err = this._validationError('invalid');
-      return Promise.reject(err);
+      return Promise.reject(this._validationError('invalid'));
     }
 
-    let assertions = Object
-      .keys(this.assertions)
-      .filter(key => this._hasOption(key));
+    let assertions = this.assertions;
 
     for (let i = 0; i < assertions.length; i += 1) {
-      let key = assertions[i];
-      let assert = this.assertions[key];
-      let opts = this._option(key);
+      let assertion = assertions[i];
+      let assert = assertion.fn;
+      let opts = assertion.opts;
 
       if (!assert(data, opts)) {
-        err = this._validationError('invalid');
-        return Promise.reject(err);
+        return Promise.reject(this._validationError('invalid'));
       }
     }
 
     return Promise.resolve();
   }
 
-  _applyMutators (data) {
-    let value = data;
-    let mutators = Object
-      .keys(this.mutators)
-      .filter(key => this._hasOption(key));
-
-    for (let i = 0; i < mutators.length; i += 1) {
-      let key = mutators[i];
-      let mutate = this.mutators[key];
-      let opts = this._option(key);
-      value = mutate(value, opts);
+  static create (definition, options) {
+    if (typeof definition !== 'object') {
+      definition = { $type: definition };
     }
 
-    return value;
+    let type = definition.$type;
+    let id = types.resolve(type);
+    let config = cache.get(id);
+
+    if (!config) {
+      throw new Error(`Data type could not be found for the alias: ${type}`);
+    }
+
+    if (!options.path) {
+      options.path = '';
+    }
+
+    return new DataTypeValidator(definition, config, options);
+  }
+
+  static define (config) {
+    config.aliases.forEach(alias => {
+      if (types.resolve(alias)) throw new Error(`A type with alias ${alias} is already defined`);
+    });
+
+    let id = types.put(config.aliases);
+    cache.set(id, config);
   }
 }
-
-DataTypeValidator._types = [];
-
-DataTypeValidator.Types = {};
 
 module.exports = DataTypeValidator;

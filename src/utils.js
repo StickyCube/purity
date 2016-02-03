@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports.isSchema = function (value) {
-  return value instanceof require('./schema');
+  const Schema = require('./schema');
+  return value instanceof Schema;
 };
 
 module.exports.isArray = function (value) {
@@ -19,3 +20,6 @@ module.exports.isNan = function (value) {
 module.exports.isEndpoint = function (value) {
   return (typeof value === 'object') && ('$type' in value);
 };
+
+module.exports.Promise = require('es6-promise').Promise;
+module.exports.Map = require('es6-map');

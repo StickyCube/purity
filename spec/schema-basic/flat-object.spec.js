@@ -1,15 +1,15 @@
 'use strict';
 
-let expect = require('chai').expect;
-let sandbox = require('sinon').sandbox.create();
+var expect = require('chai').expect;
+var sinon = require('sinon');
 
-let Schema = require('../../../src/purity').Schema;
+var purity = require('../../dist/purity');
 
-let onResolve = sandbox.stub();
-let onReject = sandbox.stub();
+var onResolve = sinon.stub();
+var onReject = sinon.stub();
 
 describe('Basic flat object Schema', function () {
-  let schema = null;
+  var schema = null;
 
   beforeEach(function () {
     onResolve.reset();
@@ -18,7 +18,7 @@ describe('Basic flat object Schema', function () {
 
   describe('When not using $type syntax', function () {
     beforeEach(function () {
-      schema = new Schema({
+      schema = new purity.Schema({
         foo: Number,
         bar: String
       });
@@ -50,7 +50,7 @@ describe('Basic flat object Schema', function () {
 
   describe('When using $type syntax', function () {
     beforeEach(function () {
-      schema = new Schema({
+      schema = new purity.Schema({
         foo: { $type: Number },
         bar: { $type: String }
       });
@@ -82,10 +82,10 @@ describe('Basic flat object Schema', function () {
 
   describe('When using existing schemas', function () {
     beforeEach(function () {
-      let numberSchema = new Schema(Number);
-      let stringSchema = new Schema(String);
+      var numberSchema = new purity.Schema(Number);
+      var stringSchema = new purity.Schema(String);
 
-      schema = new Schema({
+      schema = new purity.Schema({
         foo: numberSchema,
         bar: stringSchema
       });

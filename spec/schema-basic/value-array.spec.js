@@ -1,15 +1,15 @@
 'use strict';
 
-let expect = require('chai').expect;
-let sandbox = require('sinon').sandbox.create();
+var expect = require('chai').expect;
+var sinon = require('sinon');
 
-let Schema = require('../../../src/purity').Schema;
+var purity = require('../../dist/purity');
 
-let onResolve = sandbox.stub();
-let onReject = sandbox.stub();
+var onResolve = sinon.stub();
+var onReject = sinon.stub();
 
 describe('Basic value array schema', function () {
-  let schema = null;
+  var schema = null;
 
   afterEach(function () {
     onResolve.reset();
@@ -18,7 +18,7 @@ describe('Basic value array schema', function () {
 
   describe('When not using the $type syntax', function () {
     beforeEach(function () {
-      schema = new Schema([Number]);
+      schema = new purity.Schema([Number]);
     });
 
     it('Should reject a non array value of a valid type', function (done) {
@@ -69,7 +69,7 @@ describe('Basic value array schema', function () {
 
   describe('When using the $type syntax', function () {
     beforeEach(function () {
-      schema = new Schema([{ $type: Number }]);
+      schema = new purity.Schema([{ $type: Number }]);
     });
 
     it('Should reject a non array value of a valid type', function (done) {
@@ -119,14 +119,14 @@ describe('Basic value array schema', function () {
   });
 
   describe('When using an existing (single value) Schema', function () {
-    let reference = null;
+    var reference = null;
 
     before(function () {
-      reference = new Schema({ $type: Number });
+      reference = new purity.Schema({ $type: Number });
     });
 
     beforeEach(function () {
-      schema = new Schema([reference]);
+      schema = new purity.Schema([reference]);
     });
 
     it('Should reject a non array value of a valid type', function (done) {
@@ -176,14 +176,14 @@ describe('Basic value array schema', function () {
   });
 
   describe('When using an existing (array value) Schema', function () {
-    let reference = null;
+    var reference = null;
 
     before(function () {
-      reference = new Schema([{ $type: Number }]);
+      reference = new purity.Schema([{ $type: Number }]);
     });
 
     beforeEach(function () {
-      schema = new Schema(reference);
+      schema = new purity.Schema(reference);
     });
 
     it('Should reject a non array value of a valid type', function (done) {
