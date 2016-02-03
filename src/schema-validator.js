@@ -6,7 +6,7 @@ const utils = require('./utils');
 const Promise = utils.Promise;
 
 const ValidationResult = require('./validation-result');
-const DataValidationError = require('./validation-error');
+const ValidationError = require('./validation-error');
 const DataTypeValidator = require('./data-type-validator');
 
 class SchemaValidator {
@@ -77,7 +77,10 @@ class SchemaValidator {
     let array = utils.isArray(data);
 
     if (array !== !!this.options.isArray) {
-      let err = DataValidationError.create('invalid', { path: this.options.path || '' });
+      let err = new ValidationError({
+        type: 'invalid',
+        path: this.options.path || ''
+      });
       return Promise.reject(err);
     }
 

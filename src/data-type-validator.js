@@ -1,11 +1,9 @@
 'use strict';
 
-
 const ValidationResult = require('./validation-result');
-const DataValidationError = require('./validation-error');
+const ValidationError = require('./validation-error');
 const DataTransform = require('./data-transform');
-const types = require('./known-types');
-
+const knownTypes = require('./known-types');
 const utils = require('./utils');
 const Promise = utils.Promise;
 const Map = utils.Map;
@@ -45,7 +43,7 @@ class DataTypeValidator {
   _setupTransforms () {
     let transform = this._option('$transform') || [];
     let type = this._option('$type');
-    let id = types.resolve(type);
+    let id = knownTypes.resolve(type);
     return DataTransform.parse(transform, id);
   }
 
@@ -77,7 +75,10 @@ class DataTypeValidator {
   }
 
   _validationError (type) {
-    return DataValidationError.create(type, { path: this.options.path });
+    return new ValidationError({
+      type: type,
+      path: this.options.path
+    });
   }
 
   _validateMissing (data, options) {
@@ -140,7 +141,7 @@ class DataTypeValidator {
     }
 
     let type = definition.$type;
-    let id = types.resolve(type);
+    let id = knownTypes.resolve(type);
     let config = cache.get(id);
 
     if (!config) {
@@ -156,10 +157,10 @@ class DataTypeValidator {
 
   static define (config) {
     config.aliases.forEach(alias => {
-      if (types.resolve(alias)) throw new Error(`A type with alias ${alias} is already defined`);
+      if (knownTypes.resolve(alias)) throw new Error(`A type with alias ${alias} is already defined`);
     });
 
-    let id = types.put(config.aliases);
+    let id = knownTypes.put(config.aliases);
     cache.set(id, config);
   }
 }

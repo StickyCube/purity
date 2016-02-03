@@ -1,12 +1,10 @@
 'use strict';
 
 const utils = require('./utils');
+const knownTypes = require('./known-types');
 const Map = utils.Map;
 
-const knownTypes = require('./known-types');
-
 const identity = v => v;
-
 let Transformations = {};
 
 function parseArgument (arg) {
@@ -56,9 +54,6 @@ class Transformer {
     let aliases = knownTypes.resolve(config.restrict);
     let mapped = Transformations[operator];
 
-    console.log(config.restrict);
-    console.log(aliases);
-
     if (!mapped) {
       mapped = new Map();
     }
@@ -66,8 +61,6 @@ class Transformer {
     aliases.forEach(id => {
       mapped.set(id, config);
     });
-
-    console.log(knownTypes.resolve(knownTypes.Types.Any), mapped.has(knownTypes.resolve(knownTypes.Types.Any)));
 
     Transformations[operator] = mapped;
   }

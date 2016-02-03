@@ -1,28 +1,25 @@
 'use strict';
 
-const DEFAULT_MISSING_TEMPLATE = 'Required field ${path} is missing.';
-const DEFAULT_INVALID_TEMPLATE = 'Field ${path} has an invalid value';
+var config = require('./config');
 
 class DataValidationError extends Error {
-  constructor (message) {
+  constructor (opt) {
     super();
-    this.message = message;
+    this.type = opt.type;
+    this.path = opt.path;
+
+    let template = opt.isMiddleware
+      ? config.get('middlewareTemplate')
+      : config.get(`{$this.type}Template`);
+
+    this.message = this._createMessage(template);
   }
 
-  static _createMessage (template, source) {
-    return template.replace(/\${(path)}/ig, source.path);
-  }
-
-  static create (type, source) {
-    let template = DataValidationError.Templates[type];
-    let message = DataValidationError._createMessage(template, source);
-    return new DataValidationError(message);
+  _createMessage (template) {
+    return template
+      .replace(/\${(path)}/ig, this.path)
+      .replace(/\${(errorType)}/, this.type);
   }
 }
-
-DataValidationError.Templates = {
-  missing: DEFAULT_MISSING_TEMPLATE,
-  invalid: DEFAULT_INVALID_TEMPLATE
-};
 
 module.exports = DataValidationError;

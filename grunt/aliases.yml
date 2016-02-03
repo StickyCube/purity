@@ -3,3 +3,6 @@ test:
 
 default:
   - watch:scripts
+
+build:
+  - browserify:dist
