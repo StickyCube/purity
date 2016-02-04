@@ -1,8 +1,10 @@
 test:
+  - browserify:dev
+  - concat:dev
   - mocha_istanbul:coverage
 
 default:
   - watch:scripts
 
 build:
-  - browserify:dist
+  - browserify:prod

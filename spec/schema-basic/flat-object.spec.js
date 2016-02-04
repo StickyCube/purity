@@ -18,7 +18,7 @@ describe('Basic flat object Schema', function () {
 
   describe('When not using $type syntax', function () {
     beforeEach(function () {
-      schema = new purity.Schema({
+      schema = purity.Schema({
         foo: Number,
         bar: String
       });
@@ -50,7 +50,7 @@ describe('Basic flat object Schema', function () {
 
   describe('When using $type syntax', function () {
     beforeEach(function () {
-      schema = new purity.Schema({
+      schema = purity.Schema({
         foo: { $type: Number },
         bar: { $type: String }
       });
@@ -82,10 +82,10 @@ describe('Basic flat object Schema', function () {
 
   describe('When using existing schemas', function () {
     beforeEach(function () {
-      var numberSchema = new purity.Schema(Number);
-      var stringSchema = new purity.Schema(String);
+      var numberSchema = purity.Schema(Number);
+      var stringSchema = purity.Schema(String);
 
-      schema = new purity.Schema({
+      schema = purity.Schema({
         foo: numberSchema,
         bar: stringSchema
       });

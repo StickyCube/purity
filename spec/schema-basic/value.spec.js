@@ -18,7 +18,7 @@ describe('Basic value schema', function () {
 
   describe('When not using the $type syntax', function () {
     beforeEach(function () {
-      schema = new purity.Schema(Number);
+      schema = purity.Schema(Number);
     });
 
     it('Should validate a number correctly', function (done) {
@@ -47,7 +47,7 @@ describe('Basic value schema', function () {
 
   describe('When using the $type syntax', function () {
     beforeEach(function () {
-      schema = new purity.Schema({ $type: Number });
+      schema = purity.Schema({ $type: Number });
     });
 
     it('Should validate a number correctly', function (done) {
@@ -78,11 +78,11 @@ describe('Basic value schema', function () {
     var reference = null;
 
     before(function () {
-      reference = new purity.Schema({ $type: Number });
+      reference = purity.Schema({ $type: Number });
     });
 
     beforeEach(function () {
-      schema = new purity.Schema(reference);
+      schema = purity.Schema(reference);
     });
 
     it('Should validate a number correctly', function (done) {

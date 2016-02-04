@@ -18,7 +18,7 @@ describe('$required option', function () {
 
   describe('With no $required option', function () {
     before(function () {
-      schema = new purity.Schema({ $type: Number });
+      schema = purity.Schema({ $type: Number });
     });
 
     it('Should resolve with undefined', function (done) {
@@ -36,7 +36,7 @@ describe('$required option', function () {
 
   describe('With $required = true option', function () {
     before(function () {
-      schema = new purity.Schema({ $type: Number, $required: true });
+      schema = purity.Schema({ $type: Number, $required: true });
     });
 
     it('Should reject', function (done) {

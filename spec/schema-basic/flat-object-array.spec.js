@@ -18,7 +18,7 @@ describe('Basic value array schema', function () {
 
   describe('When not using the $type syntax', function () {
     beforeEach(function () {
-      schema = new purity.Schema([{ foo: Number, bar: String }]);
+      schema = purity.Schema([{ foo: Number, bar: String }]);
     });
 
     it('Should reject a non array value of a valid object', function (done) {
@@ -81,7 +81,7 @@ describe('Basic value array schema', function () {
 
   describe('When using the $type syntax', function () {
     beforeEach(function () {
-      schema = new purity.Schema([{
+      schema = purity.Schema([{
         foo: { $type: Number },
         bar: { $type: String }
       }]);
@@ -149,14 +149,14 @@ describe('Basic value array schema', function () {
     var reference = null;
 
     before(function () {
-      reference = new purity.Schema({
+      reference = purity.Schema({
         foo: { $type: Number },
         bar: { $type: String }
       });
     });
 
     beforeEach(function () {
-      schema = new purity.Schema([reference]);
+      schema = purity.Schema([reference]);
     });
 
     it('Should reject a non array value of a valid object', function (done) {
@@ -217,18 +217,18 @@ describe('Basic value array schema', function () {
     });
   });
 
-  describe('When using an existing (single value) Schema', function () {
+  describe('When using an existing (array value) Schema', function () {
     var reference = null;
 
     before(function () {
-      reference = new purity.Schema([{
+      reference = purity.Schema([{
         foo: { $type: Number },
         bar: { $type: String }
       }]);
     });
 
     beforeEach(function () {
-      schema = new purity.Schema(reference);
+      schema = purity.Schema(reference);
     });
 
     it('Should reject a non array value of a valid object', function (done) {

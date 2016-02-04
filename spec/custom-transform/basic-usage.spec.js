@@ -3,7 +3,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
-var purity = require('../../src/purity');
+var purity = require('../../dist/purity');
 
 var onResolve = sinon.stub();
 var onReject = sinon.stub();
@@ -32,7 +32,7 @@ describe('Defining a transform', function () {
     });
 
     before(function () {
-      schema = new purity.Schema({ $type: String, $transform: ['$test1:bar'] });
+      schema = purity.Schema({ $type: String, $transform: ['$test1:bar'] });
     });
 
     it('Should apply the transform', function (done) {
@@ -60,7 +60,7 @@ describe('Defining a transform', function () {
     });
 
     before(function () {
-      schema = new purity.Schema({ $type: String, $transform: ['$test2:bar'] });
+      schema = purity.Schema({ $type: String, $transform: ['$test2:bar'] });
     });
 
     it('Should not apply the transform', function (done) {

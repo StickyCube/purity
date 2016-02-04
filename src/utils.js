@@ -1,8 +1,7 @@
 'use strict';
 
 module.exports.isSchema = function (value) {
-  const Schema = require('./schema');
-  return value instanceof Schema;
+  return value && value._isPuritySchema_;
 };
 
 module.exports.isArray = function (value) {
@@ -19,6 +18,17 @@ module.exports.isNan = function (value) {
 
 module.exports.isEndpoint = function (value) {
   return (typeof value === 'object') && ('$type' in value);
+};
+
+module.exports.clone = function (obj) {
+  let copy = {};
+  let orig = obj || {};
+
+  for (let key in orig) {
+    copy[key] = orig[key];
+  }
+
+  return copy;
 };
 
 module.exports.Promise = require('es6-promise').Promise;

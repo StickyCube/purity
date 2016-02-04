@@ -8,7 +8,7 @@ describe('Using callback api', function () {
   var schema = null;
 
   beforeEach(function () {
-    schema = new purity.Schema({
+    schema = purity.Schema({
       foo: Number,
       bar: String
     });

@@ -1,7 +1,7 @@
 'use strict';
 
+const AbstractValidator = require('./abstract-validator');
 const ValidationResult = require('./validation-result');
-const ValidationError = require('./validation-error');
 const DataTransform = require('./data-transform');
 const knownTypes = require('./known-types');
 const utils = require('./utils');
@@ -10,15 +10,16 @@ const Map = utils.Map;
 
 let cache = new Map();
 
-class DataTypeValidator {
+class DataTypeValidator extends AbstractValidator {
 
   constructor (definition, config, options) {
+    super(options);
+
     this.definition = definition;
     this.config = config;
-    this.options = options;
 
-    this.transform = this._setupTransforms();
-    this.assertions = this._setupAssertions();
+    this.transform = this.setupTransforms();
+    this.assertions = this.setupAssertions();
   }
 
   checkType (value) {
@@ -28,98 +29,90 @@ class DataTypeValidator {
   }
 
   validate (data, opt) {
-    opt = opt || {};
+    let options = utils.clone(opt);
 
-    let options = {
-      index: opt.index,
-      path: this.options.path
-    };
+    options.path = this.options.path;
 
     return data == null
-      ? this._validateMissing(data, options)
-      : this._validateData(data, options);
+      ? this.validateMissing(data, options)
+      : this.validateData(data, options);
   }
 
-  _setupTransforms () {
-    let transform = this._option('$transform') || [];
-    let type = this._option('$type');
+  setupTransforms () {
+    let transform = this.option('$transform') || [];
+    let type = this.option('$type');
     let id = knownTypes.resolve(type);
     return DataTransform.parse(transform, id);
   }
 
-  _setupAssertions () {
+  setupAssertions () {
     let assertions = this.config.assertions || {};
     return Object
       .keys(assertions)
-      .filter(key => this._hasOption(key))
+      .filter(key => this.hasOption(key))
       .reduce((arr, key) => {
-        let opts = this._option(key);
+        let opts = this.option(key);
         let fn = assertions[key];
         return [{ opts: opts, fn: fn }, ...arr];
       }, []);
   }
 
-  _hasOption (name) {
+  hasOption (name) {
     return name in this.definition;
   }
 
-  _option (name) {
+  option (name) {
     return this.definition[name];
   }
 
-  _getDefaultValue () {
-    let defaultValue = this._option('$default');
+  getDefaultValue () {
+    let defaultValue = this.option('$default');
     return typeof defaultValue === 'function'
       ? defaultValue()
       : defaultValue;
   }
 
-  _validationError (type) {
-    return new ValidationError({
-      type: type,
-      path: this.options.path
-    });
-  }
+  validateMissing (data, options) {
+    let isRequired = !!this.definition.$required;
+    let hasDefault = ('$default' in this.definition);
 
-  _validateMissing (data, options) {
-    let isRequired = !!this._option('$required');
-    let hasDefault = this._hasOption('$default');
-    let err;
-
-    if (hasDefault) {
-      options.value = this._getDefaultValue();
-    } else if (isRequired) {
-      err = this._validationError('missing');
-    } else {
-      options.value = data;
+    if (isRequired && !hasDefault) {
+      return this.error('missing');
     }
 
-    return err
-      ? Promise.reject(err)
-      : Promise.resolve(new ValidationResult(options));
+    options.value = hasDefault
+      ? this.getDefaultValue()
+      : data;
+
+    return Promise.resolve(new ValidationResult(options));
   }
 
-  _validateData (data, options) {
-    if (this._option('$cast')) {
-      data = this.cast(data);
-    }
+  validateData (data, options) {
+    let isCorrectType = this.checkType(data);
+    let skipTest = (options.skip === 'test');
+    let skipTransform = (options.skip === 'transform');
+
+    if (!isCorrectType) return this.error('invalid');
 
     return new Promise((resolve, reject) => {
+      if (skipTest) {
+        options.value = this.transform.evaluate(data);
+        return resolve(new ValidationResult(options));
+      }
+
       this
-        ._applyAssertions(data)
+        .applyAssertions(data)
         .catch(reject)
         .then(() => {
-          options.value = this.transform.evaluate(data);
+          options.value = skipTransform
+            ? data
+            : this.transform.evaluate(data);
           resolve(new ValidationResult(options));
         });
     });
   }
 
-  _applyAssertions (data) {
-    if (!this.checkType(data)) {
-      return Promise.reject(this._validationError('invalid'));
-    }
-
+  applyAssertions (data) {
     let assertions = this.assertions;
 
     for (let i = 0; i < assertions.length; i += 1) {
@@ -128,7 +121,7 @@ class DataTypeValidator {
       let opts = assertion.opts;
 
       if (!assert(data, opts)) {
-        return Promise.reject(this._validationError('invalid'));
+        return this.error('invalid');
       }
     }
 

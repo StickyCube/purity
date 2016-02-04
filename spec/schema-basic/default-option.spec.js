@@ -18,7 +18,7 @@ describe('$default option', function () {
 
   describe('With no default option', function () {
     before(function () {
-      schema = new purity.Schema({ $type: Number });
+      schema = purity.Schema({ $type: Number });
     });
 
     it('Should resolve with undefined', function (done) {
@@ -36,7 +36,7 @@ describe('$default option', function () {
 
   describe('When $default is a static value', function () {
     before(function () {
-      schema = new purity.Schema({ $type: Number, $default: 123 });
+      schema = purity.Schema({ $type: Number, $default: 123 });
     });
 
     it('Should resolve with the given value', function (done) {
@@ -55,7 +55,7 @@ describe('$default option', function () {
   describe('When $default is a function', function () {
     before(function () {
       var fn = function () { return 12345; };
-      schema = new purity.Schema({ $type: Number, $default: fn });
+      schema = purity.Schema({ $type: Number, $default: fn });
     });
 
     it('Should resolve with the function return value', function (done) {

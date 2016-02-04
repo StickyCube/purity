@@ -2,38 +2,39 @@
 
 const squish = require('object-squish');
 const ok = require('ok-js');
+
 const utils = require('./utils');
 const Promise = utils.Promise;
 
 const ValidationResult = require('./validation-result');
-const ValidationError = require('./validation-error');
 const DataTypeValidator = require('./data-type-validator');
+const AbstractValidator = require('./abstract-validator');
 
-class SchemaValidator {
+class SchemaValidator extends AbstractValidator {
   constructor (definition, options) {
+    super(options);
+
     this.definition = null;
     this.validators = null;
 
-    this.options = options || {};
+    this.definition = this.getDefinition(definition);
 
-    this.definition = this._getDefinition(definition);
-
-    this._compile();
+    this.compile();
   }
 
-  _getDefinition (definition) {
+  getDefinition (definition) {
     if (utils.isArray(definition)) {
       // if we have an array, set the array flag and keep going
       this.options.isArray = true;
-      return this._getDefinition(definition.pop());
+      return this.getDefinition(definition.pop());
     }
 
     if (utils.isSchema(definition)) {
       // if it's a schema, set the array flag and keep going
-      if (definition.validator.options.isArray) {
+      if (definition._validator.options.isArray) {
         this.options.isArray = true;
       }
-      return this._getDefinition(definition.validator.definition);
+      return this.getDefinition(definition._validator.definition);
     }
 
     if (!utils.isPlainObject(definition)) {
@@ -43,20 +44,25 @@ class SchemaValidator {
     return definition;
   }
 
-  _createPromises (data) {
+  createPromises (data, opt) {
     let paths = Object.keys(this.validators);
+
+    opt = opt || {};
 
     return data.reduce((promises, data, index) => {
       return paths.map(path => {
         let validator = this.validators[path];
         let value = ok.get(data, path || null);
-        let idx = this.options.isArray ? index : null;
-        return validator.validate(value, { index: idx });
+        let options = {
+          index: this.options.isArray ? index : null,
+          skip: opt.skip || null
+        };
+        return validator.validate(value, options);
       }).concat(promises);
     }, []);
   }
 
-  _compile () {
+  compile () {
     let flattened = utils.isEndpoint(this.definition)
       ? { '': this.definition }
       : squish(this.definition, { stopWhen: utils.isEndpoint });
@@ -73,31 +79,29 @@ class SchemaValidator {
     }, {});
   }
 
-  validate (data) {
+  validate (data, opt) {
     let array = utils.isArray(data);
 
     if (array !== !!this.options.isArray) {
-      let err = new ValidationError({
-        type: 'invalid',
-        path: this.options.path || ''
-      });
-      return Promise.reject(err);
+      return this.error('invalid');
     }
 
     if (!array) {
       data = [data];
     }
 
-    let promises = this._createPromises(data);
-    // let deferred = Promise.defer();
+    let promises = this.createPromises(data, opt);
 
-    return Promise.all(promises)
-      // .catch(err => deferred.reject(err))
-      .then(results => {
-        let result = this.inflate(results);
-        let opt = { value: result, path: this.options.path };
-        return new ValidationResult(opt);
-      });
+    return new Promise((resolve, reject) => {
+      return Promise.all(promises)
+        .catch(reject)
+        .then(results => {
+          let result = this.inflate(results);
+          let opt = { value: result, path: this.options.path };
+          let value = new ValidationResult(opt);
+          resolve(value);
+        });
+    });
   }
 
   inflate (results) {

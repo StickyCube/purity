@@ -154,6 +154,31 @@ transform('$tofixed', {
   transform: (v, n) => parseFloat(v.toFixed(n))
 });
 
+transform('$inc', {
+  restrict: [Number],
+  transform: (v, n) => v + n
+});
+
+transform('$dec', {
+  restrict: [Number],
+  transform: (v, n) => v + n
+});
+
+transform('$mul', {
+  restrict: [Number],
+  transform: (v, n) => v * n
+});
+
+transform('$div', {
+  restrict: [Number],
+  transform: (v, n) => v / n
+});
+
+transform('$mod', {
+  restrict: [Number],
+  transform: (v, n) => v % n
+});
+
 // === Boolean transformations
 transform('$cast', {
   restrict: [Boolean],

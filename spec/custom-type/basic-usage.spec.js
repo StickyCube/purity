@@ -3,7 +3,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
-var purity = require('../../src/purity');
+var purity = require('../../dist/purity');
 
 var onResolve = sinon.stub();
 var onReject = sinon.stub();
@@ -61,7 +61,7 @@ describe('Defining a data type', function () {
     describe('Creating a schema', function () {
       it('Should create the schema without throwing', function () {
         expect(function () {
-          return new purity.Schema({ $type: 'Alias_2' });
+          return purity.Schema({ $type: 'Alias_2' });
         }).not.to.throw();
       });
     });
@@ -70,7 +70,7 @@ describe('Defining a data type', function () {
       var schema = null;
 
       before(function () {
-        schema = new purity.Schema({ $type: 'Alias_2' });
+        schema = purity.Schema({ $type: 'Alias_2' });
       });
 
       it('Should reject an array', function (done) {
@@ -108,7 +108,7 @@ describe('Defining a data type', function () {
       });
 
       before(function () {
-        schema = new purity.Schema({ $type: 'Alias_3' });
+        schema = purity.Schema({ $type: 'Alias_3' });
       });
 
       it('Should resolve for null', function (done) {

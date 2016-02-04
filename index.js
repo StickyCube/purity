@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./src/purity');
+module.exports = require('./dist/purity');
