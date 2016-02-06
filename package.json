@@ -11,7 +11,9 @@
     "schema"
   ],
   "scripts": {
-    "test": "grunt test"
+    "build-dev": "grunt build-dev",
+    "generate-coverage": "grunt cover",
+    "test": "_mocha --recursive spec"
   },
   "semistandard": {
     "globals": [
@@ -29,6 +31,7 @@
   "license": "MIT",
   "devDependencies": {
     "babel": "^6.3.26",
+    "babel-cli": "^6.4.5",
     "babel-core": "^6.4.5",
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
@@ -37,14 +40,13 @@
     "es6-promise": "^3.0.2",
     "grunt": "^0.4.5",
     "grunt-browserify": "^4.0.1",
+    "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-watch": "^0.6.1",
+    "grunt-exorcise": "^2.1.0",
     "grunt-mocha-istanbul": "^3.0.1",
-    "istanbul": "^0.4.2",
-    "load-grunt-config": "^0.19.1",
+    "isparta": "^4.0.0",
     "mocha": "^2.3.4",
-    "sinon": "^1.17.2",
-    "source-map-support": "^0.4.0"
+    "sinon": "^1.17.2"
   },
   "dependencies": {
     "object-squish": "1.1.0",

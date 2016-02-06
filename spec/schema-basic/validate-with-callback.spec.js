@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect;
 
-var purity = require('../../dist/purity');
+var purity = require('../../src/purity');
 
 describe('Using callback api', function () {
   var schema = null;

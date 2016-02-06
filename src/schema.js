@@ -7,6 +7,7 @@ const Promise = require('./utils').Promise;
 
 class Schema {
   constructor (definition, options) {
+    // throw new Error('fewfefwf');
     this._validator = new SchemaValidator(definition, options);
     this._isPuritySchema_ = true;
   }

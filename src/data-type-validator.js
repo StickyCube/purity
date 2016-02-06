@@ -39,8 +39,8 @@ class DataTypeValidator extends AbstractValidator {
   }
 
   setupTransforms () {
-    let transform = this.option('$transform') || [];
-    let type = this.option('$type');
+    let transform = this.definition.$transform || [];
+    let type = this.definition.$type;
     let id = knownTypes.resolve(type);
     return DataTransform.parse(transform, id);
   }
@@ -49,32 +49,25 @@ class DataTypeValidator extends AbstractValidator {
     let assertions = this.config.assertions || {};
     return Object
       .keys(assertions)
-      .filter(key => this.hasOption(key))
+      .filter(key => key in this.definition)
       .reduce((arr, key) => {
-        let opts = this.option(key);
+        let opts = this.definition[key];
         let fn = assertions[key];
         return [{ opts: opts, fn: fn }, ...arr];
       }, []);
   }
 
-  hasOption (name) {
-    return name in this.definition;
-  }
-
-  option (name) {
-    return this.definition[name];
-  }
-
   getDefaultValue () {
-    let defaultValue = this.option('$default');
+    let defaultValue = this.definition.$default;
     return typeof defaultValue === 'function'
       ? defaultValue()
       : defaultValue;
   }
 
   validateMissing (data, options) {
-    let isRequired = !!this.definition.$required;
-    let hasDefault = ('$default' in this.definition);
+    const isRequired = !!this.definition.$required;
+    const hasDefault = ('$default' in this.definition);
+    let result = null;
 
     if (isRequired && !hasDefault) {
       return this.error('missing');
@@ -84,30 +77,34 @@ class DataTypeValidator extends AbstractValidator {
       ? this.getDefaultValue()
       : data;
 
-    return Promise.resolve(new ValidationResult(options));
+    result = new ValidationResult(options);
+
+    return Promise.resolve(result);
   }
 
   validateData (data, options) {
-    let isCorrectType = this.checkType(data);
-    let skipTest = (options.skip === 'test');
-    let skipTransform = (options.skip === 'transform');
+    const isCorrectType = this.checkType(data);
+    const skipTest = (options.skip === 'test');
+    const skipTransform = (options.skip === 'transform');
+
+    let result = null;
 
     if (!isCorrectType) return this.error('invalid');
 
     return new Promise((resolve, reject) => {
       if (skipTest) {
         options.value = this.transform.evaluate(data);
-        return resolve(new ValidationResult(options));
+        result = new ValidationResult(options);
+        return resolve(result);
       }
 
       this
         .applyAssertions(data)
         .catch(reject)
         .then(() => {
-          options.value = skipTransform
-            ? data
-            : this.transform.evaluate(data);
-          resolve(new ValidationResult(options));
+          options.value = skipTransform ? data : this.transform.evaluate(data);
+          result = new ValidationResult(options);
+          resolve(result);
         });
     });
   }
@@ -149,11 +146,13 @@ class DataTypeValidator extends AbstractValidator {
   }
 
   static define (config) {
+    let id = null;
+
     config.aliases.forEach(alias => {
       if (knownTypes.resolve(alias)) throw new Error(`A type with alias ${alias} is already defined`);
     });
 
-    let id = knownTypes.put(config.aliases);
+    id = knownTypes.put(config.aliases);
     cache.set(id, config);
   }
 }

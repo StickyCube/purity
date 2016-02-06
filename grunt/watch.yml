@@ -1,7 +1,0 @@
-scripts:
-  files:
-    - src/**/*.js
-  tasks:
-    - browserify:dist
-  options:
-    atBegin: true

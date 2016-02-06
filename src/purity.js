@@ -133,6 +133,24 @@ transform('$replace', {
   }
 });
 
+transform('$substring', {
+  restrict: [String],
+  transform: function () {
+    var args = [...arguments];
+    var val = args.shift();
+    return val.substring(...args);
+  }
+});
+
+transform('$substr', {
+  restrict: [String],
+  transform: function () {
+    var args = [...arguments];
+    var val = args.shift();
+    return val.substr(...args);
+  }
+});
+
 // === Number transformations
 transform('$cast', {
   restrict: [Number],

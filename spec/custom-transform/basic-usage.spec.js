@@ -3,7 +3,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 
-var purity = require('../../dist/purity');
+var purity = require('../../src/purity');
 
 var onResolve = sinon.stub();
 var onReject = sinon.stub();
