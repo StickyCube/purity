@@ -88,9 +88,19 @@ class DataValidator extends AbstractValidator {
   }
 
   validateData (data, options) {
-    const isCorrectType = this.checkType(data);
+    let shouldCast;
 
-    if (!isCorrectType) return this.error('invalid');
+    if ('$cast' in this.definition) {
+      shouldCast = !!this.definition.$cast;
+    } else {
+      shouldCast = !!options.cast;
+    }
+
+    if (shouldCast) {
+      data = this.config.cast(data);
+    }
+
+    if (!this.checkType(data)) return this.error('invalid');
 
     return this
       .applyAssertions(data)

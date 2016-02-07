@@ -54,19 +54,15 @@ export default class SchemaValidator extends AbstractValidator {
     return definition;
   }
 
-  createPromises (data, opt) {
+  createPromises (data) {
     let paths = Object.keys(this.validators);
 
-    opt = opt || {};
-
-    return data.reduce((promises, data, index) => {
+    return data.reduce((promises, data, idx) => {
       return paths.map(path => {
         let validator = this.validators[path];
         let value = ok.get(data, path || null);
-        let options = {
-          index: this.options.isArray ? index : null,
-          skip: opt.skip || null
-        };
+        let index = this.options.isArray ? idx : null;
+        let options = { index: index, cast: this.options.cast };
         return validator.validate(value, options);
       }).concat(promises);
     }, []);
@@ -89,7 +85,7 @@ export default class SchemaValidator extends AbstractValidator {
     }, {});
   }
 
-  validate (data, opt) {
+  validate (data) {
     let array = isArray(data);
 
     if (array !== !!this.options.isArray) {
@@ -100,12 +96,12 @@ export default class SchemaValidator extends AbstractValidator {
       data = [data];
     }
 
-    let promises = this.createPromises(data, opt);
+    let promises = this.createPromises(data);
 
     return Promise.all(promises).then(results => {
       let result = this.inflate(results);
-      let opt = { value: result, path: this.options.path };
-      return new ValidationResult(opt);
+      let options = { value: result, path: this.options.path };
+      return new ValidationResult(options);
     });
   }
 
