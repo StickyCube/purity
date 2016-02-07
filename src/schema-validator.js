@@ -8,7 +8,8 @@ import {
   isArray,
   isSchema,
   isPlainObject,
-  isEndpoint
+  isEndpoint,
+  clone
 } from './utils';
 
 import AbstractValidator from './abstract-validator';
@@ -36,7 +37,7 @@ export default class SchemaValidator extends AbstractValidator {
     if (isArray(definition)) {
       // if we have an array, set the array flag and keep going
       this.options.isArray = true;
-      return this.getDefinition(definition.pop());
+      return this.getDefinition(definition.shift());
     }
 
     if (isSchema(definition)) {
@@ -59,9 +60,9 @@ export default class SchemaValidator extends AbstractValidator {
 
     return data.reduce((promises, data, idx) => {
       return paths.map(path => {
+        let index = this.options.isArray ? idx : null;
         let validator = this.validators[path];
         let value = ok.get(data, path || null);
-        let index = this.options.isArray ? idx : null;
         let options = { index: index, cast: this.options.cast };
         return validator.validate(value, options);
       }).concat(promises);
@@ -77,16 +78,19 @@ export default class SchemaValidator extends AbstractValidator {
     this.validators = paths.reduce((validators, path) => {
       let value = flattened[path];
 
-      validators[path] = isSchema(value) || isArray(value)
-        ? new SchemaValidator(value, { path: path })
-        : DataValidator.create(value, { path: path });
+      if (isSchema(value) || isArray(value)) {
+        validators[path] = new SchemaValidator(value, { path: path });
+      } else {
+        validators[path] = DataValidator.create(value, { path: path });
+      }
 
       return validators;
     }, {});
   }
 
-  validate (data) {
+  validate (data, opt) {
     let array = isArray(data);
+    let options = clone(opt);
 
     if (array !== !!this.options.isArray) {
       return this.error('invalid');
@@ -99,8 +103,8 @@ export default class SchemaValidator extends AbstractValidator {
     let promises = this.createPromises(data);
 
     return Promise.all(promises).then(results => {
-      let result = this.inflate(results);
-      let options = { value: result, path: this.options.path };
+      options.value = this.inflate(results);
+      options.path = this.options.path;
       return new ValidationResult(options);
     });
   }
