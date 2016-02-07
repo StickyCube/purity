@@ -15,7 +15,11 @@ export function inflateObject (results) {
     let path = result.path;
     let value = result.value;
 
-    ok.set(data, path, value);
+    if (!result.required && typeof value === 'undefined') {
+      ok.ensure(data, path.replace(/\.[^.]+$/, ''), {});
+    } else {
+      ok.set(data, path, value);
+    }
   }
 
   return data;
@@ -39,6 +43,10 @@ export function inflateArray (results) {
 export class ValidationResult {
   constructor (options) {
     this.options = options || {};
+  }
+
+  get required () {
+    return !!this.options.required;
   }
 
   get index () {

@@ -82,6 +82,8 @@ class DataValidator extends AbstractValidator {
       ? this.getDefaultValue()
       : data;
 
+    options.required = isRequired;
+
     result = new ValidationResult(options);
 
     return Promise.resolve(result);
