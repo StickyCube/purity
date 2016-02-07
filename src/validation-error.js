@@ -1,6 +1,6 @@
 'use strict';
 
-var config = require('./config');
+import * as config from './config';
 
 function createMessage (template) {
   return template
@@ -8,7 +8,7 @@ function createMessage (template) {
     .replace(/\${(errorType)}/, this.type);
 }
 
-class DataValidationError extends Error {
+export default class extends Error {
   constructor (opt) {
     super();
     this.type = opt.type;
@@ -18,5 +18,3 @@ class DataValidationError extends Error {
     this.message = createMessage.call(this, template);
   }
 }
-
-module.exports = DataValidationError;

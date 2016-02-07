@@ -1,13 +1,13 @@
 'use strict';
 
-const ok = require('ok-js');
+import ok from 'ok-js';
 
-const SchemaValidator = require('./schema-validator');
-const Promise = require('./utils').Promise;
+import { Promise } from './utils';
 
-class Schema {
+import SchemaValidator from './schema-validator';
+
+export default class Schema {
   constructor (definition, options) {
-    // throw new Error('fewfefwf');
     this._validator = new SchemaValidator(definition, options);
     this._isPuritySchema_ = true;
   }
@@ -55,7 +55,3 @@ class Schema {
     };
   }
 }
-
-module.exports = function (definition, options) {
-  return new Schema(definition, options);
-};

@@ -1,30 +1,20 @@
 'use strict';
 
-const utils = require('./utils');
-const knownTypes = require('./known-types');
-const Map = utils.Map;
+import { resolve, Types } from './data-types';
+import { Map, identity } from './utils';
 
-const identity = v => v;
 let Transformations = {};
 
 function parseArgument (arg) {
-  if (/^\d+(?:\.?\d+)?/.test(arg)) {
-    return parseFloat(arg);
-  }
-
-  if (arg === 'true' || arg === 'false') {
-    return arg === 'true';
-  }
-
-  if (arg === 'null') {
-    return null;
-  }
-
   if (arg === 'undefined') {
     return undefined;
   }
 
-  return arg;
+  try {
+    return JSON.parse(arg);
+  } catch (e) {
+    return arg;
+  }
 }
 
 class TransformerPipeline {
@@ -38,7 +28,7 @@ class TransformerPipeline {
   }
 }
 
-class Transformer {
+export default class Transformer {
   constructor (config, args) {
     this.config = config;
     this.args = args;
@@ -51,7 +41,7 @@ class Transformer {
   static define (operator, config) {
     config.transform = config.transform || identity;
 
-    let aliases = knownTypes.resolve(config.restrict);
+    let aliases = resolve(config.restrict);
     let mapped = Transformations[operator];
 
     if (!mapped) {
@@ -75,7 +65,7 @@ class Transformer {
         return transforms;
       }
 
-      let any = knownTypes.resolve(knownTypes.Types.Any);
+      let any = resolve(Types.Any);
       let config = mapped.get(id) || mapped.get(any);
 
       if (!config) {
@@ -89,5 +79,3 @@ class Transformer {
     return new TransformerPipeline(transformations);
   }
 }
-
-module.exports = Transformer;

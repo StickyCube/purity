@@ -1,44 +1,44 @@
 'use strict';
 
-const DataTypeValidator = require('./data-type-validator');
-const ValidationError = require('./validation-error');
-const DataTransform = require('./data-transform');
-const Schema = require('./schema');
+import { isNan, isArray } from './utils';
+import { Types } from './data-types';
 
-let Types = require('./known-types').Types;
+import SchemaObject from './schema';
+import DataValidator from './data-validator';
+import DataTransform from './data-transform';
 
-function isNan (val) {
-  return (val !== val) || (typeof val !== 'number');
+export { Types };
+export { ValidationError } from './validation-error';
+
+export function Schema () {
+  return new SchemaObject(...arguments);
 }
 
-module.exports.ValidationError = ValidationError;
-
-module.exports.createDataType = function (config) {
-  if (!config.aliases) {
+export function createDataType (opts) {
+  if (!opts.aliases) {
     throw new Error('options.aliases is required');
   }
 
-  if (!config.aliases.length) {
+  if (!opts.aliases.length) {
     throw new Error('options.aliases requires at least one alias');
   }
 
-  DataTypeValidator.define(config);
-};
+  DataValidator.define(opts);
+}
 
-module.exports.createTransform = function (operator, config) {
-  if (!config.restrict) {
-    config.restrict = [Types.Any];
+export function createTransform (operator, opts) {
+  if (!opts.restrict) {
+    opts.restrict = [Types.Any];
   }
 
-  if (!Array.isArray(config.restrict)) {
-    config.restrict = [config.restrict];
+  if (!isArray(opts.restrict)) {
+    opts.restrict = [opts.restrict];
   }
 
-  DataTransform.define(operator, config);
-};
+  DataTransform.define(operator, opts);
+}
 
 module.exports.Types = Types;
-module.exports.Schema = Schema;
 
 /**
  * Define Data Types
@@ -46,13 +46,13 @@ module.exports.Schema = Schema;
 
 // === Any
 Types.Any = Symbol('Any');
-module.exports.createDataType({
+createDataType({
   aliases: [Types.Any]
 });
 
 // === String
 Types.String = String;
-module.exports.createDataType({
+createDataType({
   checkType: val => typeof val === 'string',
   aliases: [Types.String],
   assertions: {
@@ -65,7 +65,7 @@ module.exports.createDataType({
 
 // === Number
 Types.Number = Number;
-module.exports.createDataType({
+createDataType({
   checkType: val => !isNan(val),
   aliases: [Number],
   assertions: {
@@ -80,7 +80,7 @@ module.exports.createDataType({
 
 // === Boolean;
 Types.Boolean = Boolean;
-module.exports.createDataType({
+createDataType({
   checkType: val => typeof val === 'boolean',
   aliases: [Types.Boolean],
   assertions: {
@@ -91,7 +91,7 @@ module.exports.createDataType({
 
 // === Date
 Types.Date = Date;
-module.exports.createDataType({
+createDataType({
   checkType: val => {
     return val instanceof Date && val.toString() !== 'Invalid Date';
   },
@@ -106,25 +106,23 @@ module.exports.createDataType({
  * Define Data Tranforms
  */
 
-let transform = module.exports.createTransform;
-
 // === String transformations
-transform('$cast', {
+createTransform('$cast', {
   restrict: [String],
   transform: v => `${v}`
 });
 
-transform('$uppercase', {
+createTransform('$uppercase', {
   restrict: [String],
   transform: v => v.toUpperCase()
 });
 
-transform('$lowercase', {
+createTransform('$lowercase', {
   restrict: [String],
   transform: v => v.toLowerCase()
 });
 
-transform('$replace', {
+createTransform('$replace', {
   restrict: [String],
   transform: function () {
     var args = [...arguments];
@@ -133,7 +131,7 @@ transform('$replace', {
   }
 });
 
-transform('$substring', {
+createTransform('$substring', {
   restrict: [String],
   transform: function () {
     var args = [...arguments];
@@ -142,7 +140,7 @@ transform('$substring', {
   }
 });
 
-transform('$substr', {
+createTransform('$substr', {
   restrict: [String],
   transform: function () {
     var args = [...arguments];
@@ -152,7 +150,7 @@ transform('$substr', {
 });
 
 // === Number transformations
-transform('$cast', {
+createTransform('$cast', {
   restrict: [Number],
   transform: v => {
     let parsed = parseFloat(v);
@@ -162,54 +160,54 @@ transform('$cast', {
   }
 });
 
-transform('$toprecision', {
+createTransform('$toprecision', {
   restrict: [Number],
   transform: (v, n) => parseFloat(v.toPrecision(n))
 });
 
-transform('$tofixed', {
+createTransform('$tofixed', {
   restrict: [Number],
   transform: (v, n) => parseFloat(v.toFixed(n))
 });
 
-transform('$inc', {
+createTransform('$inc', {
   restrict: [Number],
   transform: (v, n) => v + n
 });
 
-transform('$dec', {
+createTransform('$dec', {
   restrict: [Number],
   transform: (v, n) => v + n
 });
 
-transform('$mul', {
+createTransform('$mul', {
   restrict: [Number],
   transform: (v, n) => v * n
 });
 
-transform('$div', {
+createTransform('$div', {
   restrict: [Number],
   transform: (v, n) => v / n
 });
 
-transform('$mod', {
+createTransform('$mod', {
   restrict: [Number],
   transform: (v, n) => v % n
 });
 
 // === Boolean transformations
-transform('$cast', {
+createTransform('$cast', {
   restrict: [Boolean],
   transform: v => !!v
 });
 
-transform('$not', {
+createTransform('$not', {
   restrict: [Boolean],
   transform: v => !v
 });
 
 // === Date transformations
-transform('$cast', {
+createTransform('$cast', {
   restrict: [Date],
   transform: v => new Date(v)
 });

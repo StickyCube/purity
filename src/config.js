@@ -11,10 +11,10 @@ let options = {
   middlewareTemplate: '${path} is ${errorType}'
 };
 
-module.exports.get = (key) => {
+export function get (key) {
   return options[key];
-};
+}
 
-module.exports.set = (key, value) => {
+export function set (key, value) {
   options[key] = value;
-};
+}

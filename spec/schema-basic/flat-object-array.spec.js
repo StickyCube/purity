@@ -8,7 +8,7 @@ var purity = require('../../src/purity');
 var onResolve = sinon.stub();
 var onReject = sinon.stub();
 
-describe('Basic value array schema', function () {
+describe('Flat object array schema', function () {
   var schema = null;
 
   afterEach(function () {

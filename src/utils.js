@@ -31,5 +31,7 @@ module.exports.clone = function (obj) {
   return copy;
 };
 
+module.exports.identity = v => v;
+
 module.exports.Promise = require('es6-promise').Promise;
 module.exports.Map = require('es6-map');

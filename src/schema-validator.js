@@ -1,16 +1,26 @@
 'use strict';
 
-const squish = require('object-squish');
-const ok = require('ok-js');
+import squish from 'object-squish';
+import ok from 'ok-js';
 
-const utils = require('./utils');
-const Promise = utils.Promise;
+import {
+  Promise,
+  isArray,
+  isSchema,
+  isPlainObject,
+  isEndpoint
+} from './utils';
 
-const ValidationResult = require('./validation-result');
-const DataTypeValidator = require('./data-type-validator');
-const AbstractValidator = require('./abstract-validator');
+import AbstractValidator from './abstract-validator';
+import DataValidator from './data-validator';
 
-class SchemaValidator extends AbstractValidator {
+import {
+  ValidationResult,
+  inflateObject,
+  inflateArray
+} from './validation-result';
+
+export default class SchemaValidator extends AbstractValidator {
   constructor (definition, options) {
     super(options);
 
@@ -23,13 +33,13 @@ class SchemaValidator extends AbstractValidator {
   }
 
   getDefinition (definition) {
-    if (utils.isArray(definition)) {
+    if (isArray(definition)) {
       // if we have an array, set the array flag and keep going
       this.options.isArray = true;
       return this.getDefinition(definition.pop());
     }
 
-    if (utils.isSchema(definition)) {
+    if (isSchema(definition)) {
       // if it's a schema, set the array flag and keep going
       if (definition._validator.options.isArray) {
         this.options.isArray = true;
@@ -37,7 +47,7 @@ class SchemaValidator extends AbstractValidator {
       return this.getDefinition(definition._validator.definition);
     }
 
-    if (!utils.isPlainObject(definition)) {
+    if (!isPlainObject(definition)) {
       definition = { $type: definition };
     }
 
@@ -63,24 +73,24 @@ class SchemaValidator extends AbstractValidator {
   }
 
   compile () {
-    let flattened = utils.isEndpoint(this.definition)
+    let flattened = isEndpoint(this.definition)
       ? { '': this.definition }
-      : squish(this.definition, { stopWhen: utils.isEndpoint });
+      : squish(this.definition, { stopWhen: isEndpoint });
     let paths = Object.keys(flattened);
 
     this.validators = paths.reduce((validators, path) => {
       let value = flattened[path];
 
-      validators[path] = utils.isSchema(value) || utils.isArray(value)
+      validators[path] = isSchema(value) || isArray(value)
         ? new SchemaValidator(value, { path: path })
-        : DataTypeValidator.create(value, { path: path });
+        : DataValidator.create(value, { path: path });
 
       return validators;
     }, {});
   }
 
   validate (data, opt) {
-    let array = utils.isArray(data);
+    let array = isArray(data);
 
     if (array !== !!this.options.isArray) {
       return this.error('invalid');
@@ -92,23 +102,21 @@ class SchemaValidator extends AbstractValidator {
 
     let promises = this.createPromises(data, opt);
 
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
       return Promise.all(promises)
-        .catch(reject)
+        // .catch(reject)
         .then(results => {
           let result = this.inflate(results);
           let opt = { value: result, path: this.options.path };
-          let value = new ValidationResult(opt);
-          resolve(value);
+          return new ValidationResult(opt);
+          // resolve(value);
         });
-    });
+    // });
   }
 
   inflate (results) {
     return this.options.isArray
-      ? ValidationResult.inflateArray(results)
-      : ValidationResult.inflateObject(results);
+      ? inflateArray(results)
+      : inflateObject(results);
   }
 }
-
-module.exports = SchemaValidator;

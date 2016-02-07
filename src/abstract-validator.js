@@ -1,9 +1,9 @@
 'use strict';
 
-var Promise = require('./utils').Promise;
-var ValidatonError = require('./validation-error');
+import { Promise } from './utils';
+import ValidatonError from './validation-error';
 
-class AbstractValidator {
+export default class {
 
   constructor (options) {
     this.options = options || {};
@@ -18,5 +18,3 @@ class AbstractValidator {
     return Promise.reject(err);
   }
 }
-
-module.exports = AbstractValidator;

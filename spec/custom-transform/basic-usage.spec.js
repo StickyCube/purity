@@ -38,7 +38,6 @@ describe('Defining a transform', function () {
     it('Should apply the transform', function (done) {
       schema
         .validate('foo')
-        // .then(v => console.log(v), e => console.log(e))
         .then(onResolve, onReject)
         .then(function () {
           expect(onReject.called).to.be.false;

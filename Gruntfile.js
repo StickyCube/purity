@@ -1,5 +1,6 @@
 module.exports = function (grunt) {
   var production = grunt.option('production');
+  var buildDirectory = production ? 'dist' : 'build';
 
   grunt.initConfig({
     browserify: {
@@ -14,30 +15,7 @@ module.exports = function (grunt) {
             ['babelify']
           ]
         },
-        files: { 'dist/dev.js': 'src/purity.js' }
-      }
-    },
-
-    concat: {
-      build: {
-        src: [
-          'src/test-header.js',
-          'dist/dev.js'
-        ],
-        dest: 'dist/purity.js'
-      }
-    },
-
-    clean: {
-      postbuild: {
-        src: ['dist/dev.js']
-      }
-    },
-
-    exorcise: {
-      source: {
-        options: { strict: true },
-        files: { 'dist/purity.js.map': 'dist/purity.js' }
+        files: { 'build/purity.js': 'src/purity.js' }
       }
     },
 
@@ -54,16 +32,10 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-exorcise');
   grunt.loadNpmTasks('grunt-mocha-istanbul');
 
   grunt.registerTask('build', [
-    'browserify:source',
-    'concat:build',
-    'exorcise:source',
-    'clean:postbuild'
+    'browserify:source'
   ]);
 
   grunt.registerTask('cover', [
