@@ -1,36 +1,22 @@
 'use strict';
 
 var expect = require('chai').expect;
-var sinon = require('sinon');
-
 var purity = require('../../src/purity');
-
-var onResolve = sinon.stub();
-var onReject = sinon.stub();
 
 describe('$default option', function () {
   var schema = null;
-
-  beforeEach(function () {
-    onResolve.reset();
-    onReject.reset();
-  });
 
   describe('With no default option', function () {
     before(function () {
       schema = purity.Schema({ $type: Number });
     });
 
-    it('Should resolve with undefined', function (done) {
-      return schema
-        .validate(null)
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args).to.eql([undefined]);
-          done();
-        });
+    it('Should resolve with null', function (done) {
+      return schema.validate(null, function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql(null);
+        done();
+      });
     });
   });
 
@@ -40,15 +26,11 @@ describe('$default option', function () {
     });
 
     it('Should resolve with the given value', function (done) {
-      return schema
-        .validate(null)
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args).to.eql([123]);
-          done();
-        });
+      return schema.validate(null, function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql(123);
+        done();
+      });
     });
   });
 
@@ -59,15 +41,11 @@ describe('$default option', function () {
     });
 
     it('Should resolve with the function return value', function (done) {
-      return schema
-        .validate(null)
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args).to.eql([12345]);
-          done();
-        });
+      return schema.validate(null, function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql(12345);
+        done();
+      });
     });
   });
 });

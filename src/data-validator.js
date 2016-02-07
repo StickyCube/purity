@@ -1,11 +1,10 @@
 'use strict';
 
-import { Map, Promise, clone } from './utils';
+import { Map, Promise, clone, isArray, isFunction } from './utils';
 
 import AbstractValidator from './abstract-validator';
 import { ValidationResult } from './validation-result';
-import DataTransform from './data-transform';
-import { resolve, put } from './data-types';
+import { resolveIdForAlias, createNewType } from './data-types';
 
 let cache = new Map();
 
@@ -17,8 +16,8 @@ class DataValidator extends AbstractValidator {
     this.definition = definition;
     this.config = config;
 
-    this.transform = this.setupTransforms();
     this.assertions = this.setupAssertions();
+    this.transforms = this.setupTransforms();
   }
 
   checkType (value) {
@@ -37,13 +36,6 @@ class DataValidator extends AbstractValidator {
       : this.validateData(data, options);
   }
 
-  setupTransforms () {
-    let transform = this.definition.$transform || [];
-    let type = this.definition.$type;
-    let id = resolve(type);
-    return DataTransform.parse(transform, id);
-  }
-
   setupAssertions () {
     let assertions = this.config.assertions || {};
     return Object
@@ -54,6 +46,20 @@ class DataValidator extends AbstractValidator {
         let fn = assertions[key];
         return [{ opts: opts, fn: fn }, ...arr];
       }, []);
+  }
+
+  setupTransforms () {
+    let transforms = this.definition.$transform;
+
+    if (!transforms) {
+      return [];
+    }
+
+    if (!isArray(transforms)) {
+      return [transforms];
+    }
+
+    return transforms.filter(isFunction);
   }
 
   getDefaultValue () {
@@ -83,23 +89,13 @@ class DataValidator extends AbstractValidator {
 
   validateData (data, options) {
     const isCorrectType = this.checkType(data);
-    const skipTest = (options.skip === 'test');
-    const skipTransform = (options.skip === 'transform');
-
-    let result = null;
 
     if (!isCorrectType) return this.error('invalid');
-
-    if (skipTest) {
-      options.value = this.transform.evaluate(data);
-      result = new ValidationResult(options);
-      return Promise.resolve(result);
-    }
 
     return this
       .applyAssertions(data)
       .then(() => {
-        options.value = skipTransform ? data : this.transform.evaluate(data);
+        options.value = this.transform(data);
         return new ValidationResult(options);
       });
   }
@@ -120,13 +116,17 @@ class DataValidator extends AbstractValidator {
     return Promise.resolve();
   }
 
+  transform (data) {
+    return this.transforms.reduce((data, next) => next(data), data);
+  }
+
   static create (definition, options) {
     if (typeof definition !== 'object') {
       definition = { $type: definition };
     }
 
     let type = definition.$type;
-    let id = resolve(type);
+    let id = resolveIdForAlias(type);
     let config = cache.get(id);
 
     if (!config) {
@@ -143,11 +143,7 @@ class DataValidator extends AbstractValidator {
   static define (config) {
     let id = null;
 
-    config.aliases.forEach(alias => {
-      if (resolve(alias)) throw new Error(`A type with alias ${alias} is already defined`);
-    });
-
-    id = put(config.aliases);
+    id = createNewType(config.aliases);
     cache.set(id, config);
   }
 }

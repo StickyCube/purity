@@ -1,35 +1,9 @@
 'use strict';
 
 var expect = require('chai').expect;
-var sinon = require('sinon');
-
 var purity = require('../../src/purity');
 
-var onResolve = sinon.stub();
-var onReject = sinon.stub();
-
-var assertPass = function (done) {
-  return function () {
-    expect(onResolve.called).to.be.true;
-    expect(onReject.called).to.be.false;
-    done();
-  };
-};
-
-var assertFail = function (done) {
-  return function () {
-    expect(onResolve.called).to.be.false;
-    expect(onReject.called).to.be.true;
-    done();
-  };
-};
-
 describe('Defining a data type', function () {
-  beforeEach(function () {
-    onResolve.reset();
-    onReject.reset();
-  });
-
   describe('API', function () {
     it('Should expose a module on the root export', function () {
       expect(purity.createDataType).to.be.defined;
@@ -74,7 +48,10 @@ describe('Defining a data type', function () {
       });
 
       it('Should reject an array', function (done) {
-        schema.validate([]).then(onResolve, onReject).then(assertFail(done));
+        schema.validate([], function (err, res) {
+          expect(err).not.to.be.null;
+          done();
+        });
       });
 
       var types = {
@@ -89,9 +66,11 @@ describe('Defining a data type', function () {
       for (var name in types) {
         var value = types[name];
         it(`Should resolve ${name}`, function (done) {
-          schema.validate(value)
-            .then(onResolve, onReject)
-            .then(assertPass(done));
+          schema.validate(value, function (e, r) {
+            expect(e).to.be.null;
+            expect(r).to.eql(value);
+            done();
+          });
         });
       }
     });
@@ -112,35 +91,50 @@ describe('Defining a data type', function () {
       });
 
       it('Should resolve for null', function (done) {
-        return schema.validate(null)
-          .then(onResolve, onReject)
-          .then(assertPass(done));
+        return schema.validate(null, function (e, r) {
+          expect(e).to.be.null;
+          expect(r).to.eql(null);
+          done();
+        });
       });
 
       it('Should resolve for undefined', function (done) {
-        return schema.validate(undefined)
-          .then(onResolve, onReject)
-          .then(assertPass(done));
+        return schema.validate(undefined, function (e, r) {
+          expect(e).to.be.null;
+          expect(r).to.eql(undefined);
+          done();
+        });
       });
 
-      var types = {
-        string: 'abc',
-        number: 123,
-        bool: false,
-        object: {}
-      };
-
-      for (var name in types) {
-        var shouldPass = opts.checkType(types[name]);
-        var assert = shouldPass ? assertPass : assertFail;
-
-        it(`Should ${shouldPass ? 'resolve' : 'reject'} for ${name}`, function (done) {
-          return schema
-            .validate(types[name])
-            .then(onResolve, onReject)
-            .then(assert(done));
+      it('Should resolve for string', function (done) {
+        return schema.validate('abc', function (e, r) {
+          expect(e).to.be.null;
+          expect(r).to.eql('abc');
+          done();
         });
-      }
+      });
+
+      it('Should resolve for number', function (done) {
+        return schema.validate(123, function (e, r) {
+          expect(e).to.be.null;
+          expect(r).to.eql(123);
+          done();
+        });
+      });
+
+      it('Should reject for bool', function (done) {
+        return schema.validate(true, function (e, r) {
+          expect(e).not.to.be.null;
+          done();
+        });
+      });
+
+      it('Should reject for object', function (done) {
+        return schema.validate({}, function (e, r) {
+          expect(e).not.to.be.null;
+          done();
+        });
+      });
     });
   });
 });

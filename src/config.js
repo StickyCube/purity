@@ -5,10 +5,7 @@ let options = {
   missingTemplate: 'Missing required field ${path}',
 
   // error message template for invalid data
-  invalidTemplate: 'Invalid data ${path}',
-
-  // error message template for express middleware
-  middlewareTemplate: '${path} is ${errorType}'
+  invalidTemplate: 'Invalid data ${path}'
 };
 
 export function get (key) {

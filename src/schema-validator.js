@@ -102,16 +102,11 @@ export default class SchemaValidator extends AbstractValidator {
 
     let promises = this.createPromises(data, opt);
 
-    // return new Promise((resolve, reject) => {
-      return Promise.all(promises)
-        // .catch(reject)
-        .then(results => {
-          let result = this.inflate(results);
-          let opt = { value: result, path: this.options.path };
-          return new ValidationResult(opt);
-          // resolve(value);
-        });
-    // });
+    return Promise.all(promises).then(results => {
+      let result = this.inflate(results);
+      let opt = { value: result, path: this.options.path };
+      return new ValidationResult(opt);
+    });
   }
 
   inflate (results) {

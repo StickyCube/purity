@@ -1,36 +1,22 @@
 'use strict';
 
 var expect = require('chai').expect;
-var sinon = require('sinon');
-
 var purity = require('../../src/purity');
-
-var onResolve = sinon.stub();
-var onReject = sinon.stub();
 
 describe('$required option', function () {
   var schema = null;
-
-  beforeEach(function () {
-    onResolve.reset();
-    onReject.reset();
-  });
 
   describe('With no $required option', function () {
     before(function () {
       schema = purity.Schema({ $type: Number });
     });
 
-    it('Should resolve with undefined', function (done) {
-      return schema
-        .validate(null)
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args).to.eql([undefined]);
-          done();
-        });
+    it('Should resolve with null', function (done) {
+      return schema.validate(null, function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql(null);
+        done();
+      });
     });
   });
 
@@ -40,14 +26,10 @@ describe('$required option', function () {
     });
 
     it('Should reject', function (done) {
-      return schema
-        .validate(null)
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      return schema.validate(null, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
   });
 });

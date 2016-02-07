@@ -39,7 +39,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('cover', [
-    'build',
+    // 'build',
     'mocha_istanbul:cover'
   ]);
 };

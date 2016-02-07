@@ -48,9 +48,7 @@ export class ValidationResult {
   }
 
   get value () {
-    return this.options.value == null
-      ? undefined
-      : this.options.value;
+    return this.options.value;
   }
 
   get path () {

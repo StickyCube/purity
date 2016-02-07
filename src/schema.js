@@ -1,12 +1,10 @@
 'use strict';
 
-import ok from 'ok-js';
-
 import { Promise } from './utils';
 
 import SchemaValidator from './schema-validator';
 
-export default class Schema {
+export default class {
   constructor (definition, options) {
     this._validator = new SchemaValidator(definition, options);
     this._isPuritySchema_ = true;
@@ -24,34 +22,9 @@ export default class Schema {
     });
   }
 
-  test () {
-    let opt = { skip: 'transform' };
-    return arguments.length === 2
-      ? this._validateUsingCallback(...arguments, opt)
-      : this._validateUsingPromise(...arguments, opt);
-  }
-
-  transform () {
-    let opt = { skip: 'test' };
-    return arguments.length === 2
-      ? this._validateUsingCallback(...arguments, opt)
-      : this._validateUsingPromise(...arguments, opt);
-  }
-
   validate () {
     return arguments.length === 2
       ? this._validateUsingCallback(...arguments)
       : this._validateUsingPromise(...arguments);
-  }
-
-  toMiddleware (opts) {
-    return (req, res, next) => {
-      let target = opts.target || 'body';
-      this.validate(req[target], function (err, res) {
-        if (err) return next(err);
-        ok.set(req, target, res);
-        return next();
-      });
-    };
   }
 }

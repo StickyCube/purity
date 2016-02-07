@@ -6,13 +6,21 @@ let types = new Map();
 
 module.exports.Types = {};
 
-export function put (aliases) {
-  var id = Symbol();
+export function createNewType (aliases) {
+  aliases.forEach(alias => {
+    if (resolveIdForAlias(alias)) {
+      throw new Error(`A type with alias ${alias} is already defined`);
+    }
+  });
+
+  let id = Symbol();
+
   [id, ...aliases].forEach(alias => types.set(alias, id));
+
   return id;
 }
 
-export function resolve (alias) {
-  if (isArray(alias)) return alias.map(resolve);
+export function resolveIdForAlias (alias) {
+  if (isArray(alias)) return alias.map(resolveIdForAlias);
   return types.get(alias);
 }

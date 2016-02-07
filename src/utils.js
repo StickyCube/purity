@@ -1,26 +1,20 @@
 'use strict';
 
-module.exports.isSchema = function (value) {
-  return value && value._isPuritySchema_;
-};
+import Map from 'es6-map';
 
-module.exports.isArray = function (value) {
-  return Array.isArray(value);
-};
+export { Promise } from 'es6-promise';
+export { Map };
 
-module.exports.isPlainObject = function (value) {
-  return value != null && value.constructor === Object;
-};
+export const isValue = v => v != null;
+export const isSchema = v => isValue(v) && v._isPuritySchema_;
+export const isArray = v => Array.isArray(v);
+export const isFunction = v => (typeof v === 'function');
+export const isPlainObject = v => isValue(v) && (v.constructor === Object);
+export const isNan = v => (v !== v) || (typeof v !== 'number');
+export const isEndpoint = v => isPlainObject(v) && ('$type' in v);
+export const identity = v => v;
 
-module.exports.isNan = function (value) {
-  return (value !== value) || (typeof value !== 'number');
-};
-
-module.exports.isEndpoint = function (value) {
-  return (typeof value === 'object') && ('$type' in value);
-};
-
-module.exports.clone = function (obj) {
+export const clone = obj => {
   let copy = {};
   let orig = obj || {};
 
@@ -30,8 +24,3 @@ module.exports.clone = function (obj) {
 
   return copy;
 };
-
-module.exports.identity = v => v;
-
-module.exports.Promise = require('es6-promise').Promise;
-module.exports.Map = require('es6-map');

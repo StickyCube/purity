@@ -1,20 +1,10 @@
 'use strict';
 
 var expect = require('chai').expect;
-var sinon = require('sinon');
-
 var purity = require('../../src/purity');
-
-var onResolve = sinon.stub();
-var onReject = sinon.stub();
 
 describe('Flat object array schema', function () {
   var schema = null;
-
-  afterEach(function () {
-    onResolve.reset();
-    onReject.reset();
-  });
 
   describe('When not using the $type syntax', function () {
     beforeEach(function () {
@@ -22,60 +12,44 @@ describe('Flat object array schema', function () {
     });
 
     it('Should reject a non array value of a valid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 'abc' })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 'abc' }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should reject a non array value of an invalid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 456 })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 456 }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should validate an array of valid objects', function (done) {
-      schema
-        .validate([
+      schema.validate([
+        { foo: 123, bar: 'abc' },
+        { foo: 456, bar: 'def' },
+        { foo: 789, bar: 'ghi' }
+      ], function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql([
           { foo: 123, bar: 'abc' },
           { foo: 456, bar: 'def' },
           { foo: 789, bar: 'ghi' }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args[0]).to.eql([
-            { foo: 123, bar: 'abc' },
-            { foo: 456, bar: 'def' },
-            { foo: 789, bar: 'ghi' }
-          ]);
-          done();
-        });
+        ]);
+        done();
+      });
     });
 
     it('Should reject an array of invalid objects', function (done) {
-      schema
-        .validate([
-          { foo: 123, bar: 12345 },
-          { foo: 456, bar: 12345 },
-          { foo: 789, bar: 12345 }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate([
+        { foo: 123, bar: 12345 },
+        { foo: 456, bar: 12345 },
+        { foo: 789, bar: 12345 }
+      ], function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
   });
 
@@ -88,60 +62,44 @@ describe('Flat object array schema', function () {
     });
 
     it('Should reject a non array value of a valid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 'abc' })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 'abc' }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should reject a non array value of an invalid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 456 })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 456 }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should validate an array of valid objects', function (done) {
-      schema
-        .validate([
+      schema.validate([
+        { foo: 123, bar: 'abc' },
+        { foo: 456, bar: 'def' },
+        { foo: 789, bar: 'ghi' }
+      ], function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql([
           { foo: 123, bar: 'abc' },
           { foo: 456, bar: 'def' },
           { foo: 789, bar: 'ghi' }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args[0]).to.eql([
-            { foo: 123, bar: 'abc' },
-            { foo: 456, bar: 'def' },
-            { foo: 789, bar: 'ghi' }
-          ]);
-          done();
-        });
+        ]);
+        done();
+      });
     });
 
     it('Should reject an array of invalid objects', function (done) {
-      schema
-        .validate([
-          { foo: 123, bar: 12345 },
-          { foo: 456, bar: 12345 },
-          { foo: 789, bar: 12345 }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate([
+        { foo: 123, bar: 12345 },
+        { foo: 456, bar: 12345 },
+        { foo: 789, bar: 12345 }
+      ], function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
   });
 
@@ -160,60 +118,44 @@ describe('Flat object array schema', function () {
     });
 
     it('Should reject a non array value of a valid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 'abc' })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 'abc' }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should reject a non array value of an invalid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 456 })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 456 }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should validate an array of valid objects', function (done) {
-      schema
-        .validate([
+      schema.validate([
+        { foo: 123, bar: 'abc' },
+        { foo: 456, bar: 'def' },
+        { foo: 789, bar: 'ghi' }
+      ], function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql([
           { foo: 123, bar: 'abc' },
           { foo: 456, bar: 'def' },
           { foo: 789, bar: 'ghi' }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args[0]).to.eql([
-            { foo: 123, bar: 'abc' },
-            { foo: 456, bar: 'def' },
-            { foo: 789, bar: 'ghi' }
-          ]);
-          done();
-        });
+        ]);
+        done();
+      });
     });
 
     it('Should reject an array of invalid objects', function (done) {
-      schema
-        .validate([
-          { foo: 123, bar: 12345 },
-          { foo: 456, bar: 12345 },
-          { foo: 789, bar: 12345 }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate([
+        { foo: 123, bar: 12345 },
+        { foo: 456, bar: 12345 },
+        { foo: 789, bar: 12345 }
+      ], function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
   });
 
@@ -232,60 +174,44 @@ describe('Flat object array schema', function () {
     });
 
     it('Should reject a non array value of a valid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 'abc' })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 'abc' }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should reject a non array value of an invalid object', function (done) {
-      schema
-        .validate({ foo: 123, bar: 456 })
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate({ foo: 123, bar: 456 }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
 
     it('Should validate an array of valid objects', function (done) {
-      schema
-        .validate([
+      schema.validate([
+        { foo: 123, bar: 'abc' },
+        { foo: 456, bar: 'def' },
+        { foo: 789, bar: 'ghi' }
+      ], function (e, r) {
+        expect(e).to.be.null;
+        expect(r).to.eql([
           { foo: 123, bar: 'abc' },
           { foo: 456, bar: 'def' },
           { foo: 789, bar: 'ghi' }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.true;
-          expect(onReject.called).to.be.false;
-          expect(onResolve.firstCall.args[0]).to.eql([
-            { foo: 123, bar: 'abc' },
-            { foo: 456, bar: 'def' },
-            { foo: 789, bar: 'ghi' }
-          ]);
-          done();
-        });
+        ]);
+        done();
+      });
     });
 
     it('Should reject an array of invalid objects', function (done) {
-      schema
-        .validate([
-          { foo: 123, bar: 12345 },
-          { foo: 456, bar: 12345 },
-          { foo: 789, bar: 12345 }
-        ])
-        .then(onResolve, onReject)
-        .then(function () {
-          expect(onResolve.called).to.be.false;
-          expect(onReject.called).to.be.true;
-          done();
-        });
+      schema.validate([
+        { foo: 123, bar: 12345 },
+        { foo: 456, bar: 12345 },
+        { foo: 789, bar: 12345 }
+      ], function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
     });
   });
 });
