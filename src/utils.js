@@ -14,6 +14,12 @@ export const isNan = v => (v !== v) || (typeof v !== 'number');
 export const isEndpoint = v => isPlainObject(v) && ('$type' in v);
 export const identity = v => v;
 
+export const ensureArray = v => {
+  if (!isValue(v)) return [];
+  if (!isArray(v)) return [v];
+  return v;
+};
+
 export const clone = obj => {
   let copy = {};
   let orig = obj || {};

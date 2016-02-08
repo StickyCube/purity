@@ -1,6 +1,12 @@
 'use strict';
 
-import * as config from './config';
+let templates = {
+  // error message template for missing data
+  missing: 'Missing required field ${path}',
+
+  // error message template for invalid data
+  invalid: 'Invalid data ${path}'
+};
 
 function createMessage (template) {
   return template
@@ -14,7 +20,7 @@ export default class extends Error {
     this.type = opt.type;
     this.path = opt.path;
 
-    let template = config.get(`${this.type}Template`);
+    let template = templates[this.type];
     this.message = createMessage.call(this, template);
   }
 }

@@ -18,6 +18,14 @@ describe('Defining a data type', function () {
     });
   });
 
+  describe('When a type is defined empty aliases option', function () {
+    it('Should throw', function () {
+      expect(function () {
+        purity.createDataType({ aliases: [] });
+      }).to.throw();
+    });
+  });
+
   describe('When a type with an alias which is already in use is defined', function () {
     it('Should throw', function () {
       expect(function () {

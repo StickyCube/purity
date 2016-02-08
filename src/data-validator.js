@@ -1,45 +1,29 @@
 'use strict';
 
-import { Map, Promise, clone, isArray, isFunction } from './utils';
+import { Promise, clone, isArray, isFunction } from './utils';
 
 import AbstractValidator from './abstract-validator';
-import { ValidationResult } from './validation-result';
-import { resolveIdForAlias, createNewType } from './data-types';
-
-let cache = new Map();
+import ValidationResult from './validation-result';
 
 class DataValidator extends AbstractValidator {
 
-  constructor (definition, config, options) {
+  constructor (definition, options) {
     super(options);
-
     this.definition = definition;
-    this.config = config;
-
-    this.assertions = this.setupAssertions();
-    this.transforms = this.setupTransforms();
   }
 
-  checkType (value) {
-    return this.config.checkType
-      ? this.config.checkType(value)
-      : true;
+  checkType () {
+    return true;
   }
 
-  validate (data, opt) {
-    let options = clone(opt);
-
-    options.path = this.options.path;
-
-    return data == null
-      ? this.validateMissing(data, options)
-      : this.validateData(data, options);
+  cast (v) {
+    return v;
   }
 
-  setupAssertions () {
-    let assertions = this.config.assertions || {};
+  setupAssertions (assertions) {
+    // let assertions = this.config.assertions || {};
     return Object
-      .keys(assertions)
+      .keys(assertions || {})
       .filter(key => key in this.definition)
       .reduce((arr, key) => {
         let opts = this.definition[key];
@@ -60,6 +44,16 @@ class DataValidator extends AbstractValidator {
     }
 
     return transforms.filter(isFunction);
+  }
+
+  validate (data, opt) {
+    let options = clone(opt);
+
+    options.path = this.options.path;
+
+    return data == null
+      ? this.validateMissing(data, options)
+      : this.validateData(data, options);
   }
 
   getDefaultValue () {
@@ -99,7 +93,7 @@ class DataValidator extends AbstractValidator {
     }
 
     if (shouldCast) {
-      data = this.config.cast(data);
+      data = this.cast(data);
     }
 
     if (!this.checkType(data)) return this.error('invalid');
@@ -130,33 +124,6 @@ class DataValidator extends AbstractValidator {
 
   transform (data) {
     return this.transforms.reduce((data, next) => next(data), data);
-  }
-
-  static create (definition, options) {
-    if (typeof definition !== 'object') {
-      definition = { $type: definition };
-    }
-
-    let type = definition.$type;
-    let id = resolveIdForAlias(type);
-    let config = cache.get(id);
-
-    if (!config) {
-      throw new Error(`Data type could not be found for the alias: ${type}`);
-    }
-
-    if (!options.path) {
-      options.path = '';
-    }
-
-    return new DataValidator(definition, config, options);
-  }
-
-  static define (config) {
-    let id = null;
-
-    id = createNewType(config.aliases);
-    cache.set(id, config);
   }
 }
 

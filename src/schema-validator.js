@@ -13,13 +13,9 @@ import {
 } from './utils';
 
 import AbstractValidator from './abstract-validator';
-import DataValidator from './data-validator';
+import ValidationResult from './validation-result';
 
-import {
-  ValidationResult,
-  inflateObject,
-  inflateArray
-} from './validation-result';
+import { createTypeValidator } from './data-types';
 
 export default class SchemaValidator extends AbstractValidator {
   constructor (definition, options) {
@@ -81,7 +77,7 @@ export default class SchemaValidator extends AbstractValidator {
       if (isSchema(value) || isArray(value)) {
         validators[path] = new SchemaValidator(value, { path: path });
       } else {
-        validators[path] = DataValidator.create(value, { path: path });
+        validators[path] = createTypeValidator(value, { path: path });
       }
 
       return validators;
@@ -111,7 +107,7 @@ export default class SchemaValidator extends AbstractValidator {
 
   inflate (results) {
     return this.options.isArray
-      ? inflateArray(results)
-      : inflateObject(results);
+      ? ValidationResult.inflateArray(results)
+      : ValidationResult.inflateObject(results);
   }
 }

@@ -1,10 +1,9 @@
 'use strict';
 
-import { isNan } from './utils';
-import { Types } from './data-types';
+import { isNan, ensureArray } from './utils';
 
 import SchemaObject from './schema';
-import DataValidator from './data-validator';
+import { Types, defineType } from './data-types';
 
 export { Types };
 export { ValidationError } from './validation-error';
@@ -14,15 +13,13 @@ export function Schema () {
 }
 
 export function createDataType (opts) {
-  if (!opts.aliases) {
-    throw new Error('options.aliases is required');
-  }
+  opts.aliases = ensureArray(opts.aliases);
 
   if (!opts.aliases.length) {
     throw new Error('options.aliases requires at least one alias');
   }
 
-  DataValidator.define(opts);
+  defineType(opts);
 }
 
 /**
@@ -30,17 +27,15 @@ export function createDataType (opts) {
  */
 
 // === Any
-Types.Any = Symbol('Any');
 createDataType({
   aliases: [Types.Any]
 });
 
 // === String
-Types.String = String;
 createDataType({
   checkType: v => typeof v === 'string',
   cast: v => `${v}`,
-  aliases: [Types.String],
+  aliases: [Types.String, String],
   assertions: {
     $minlength: (act, opt) => act.length >= opt,
     $maxlength: (act, opt) => act.length <= opt,
@@ -50,11 +45,10 @@ createDataType({
 });
 
 // === Number
-Types.Number = Number;
 createDataType({
   checkType: v => !isNan(v),
   cast: v => parseFloat(v),
-  aliases: [Types.Number],
+  aliases: [Types.Number, Number],
   assertions: {
     $gt: (act, opt) => act > opt,
     $gte: (act, opt) => act >= opt,
@@ -66,11 +60,10 @@ createDataType({
 });
 
 // === Boolean;
-Types.Boolean = Boolean;
 createDataType({
   checkType: v => (typeof v === 'boolean'),
   cast: v => !!v,
-  aliases: [Types.Boolean],
+  aliases: [Types.Boolean, Boolean],
   assertions: {
     $eq: (act, opt) => act === opt,
     $neq: (act, opt) => act !== opt
@@ -78,13 +71,12 @@ createDataType({
 });
 
 // === Date
-Types.Date = Date;
 createDataType({
   checkType: v => {
     return (v instanceof Date) && v.toString() !== 'Invalid Date';
   },
   cast: v => new Date(v),
-  aliases: [Types.Date],
+  aliases: [Types.Date, Date],
   assertions: {
     $gt: (act, opt) => act > opt,
     $lt: (act, opt) => act < opt

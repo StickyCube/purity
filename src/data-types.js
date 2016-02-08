@@ -1,26 +1,66 @@
-'use strict';
 
-import { Map, isArray } from './utils';
+import { Map, ensureArray } from './utils';
+import DataValidator from './data-validator';
 
-let types = new Map();
+let validators = new Map();
 
-module.exports.Types = {};
+export const Types = {
+  Any: Symbol('any'),
+  String: Symbol('string'),
+  Number: Symbol('number'),
+  Boolean: Symbol('boolean'),
+  Date: Symbol('date')
+};
 
-export function createNewType (aliases) {
+export function defineType (options) {
+  let Type = class extends DataValidator {
+
+    constructor () {
+      super(...arguments);
+      this.assertions = this.setupAssertions(options.assertions);
+      this.transforms = this.setupTransforms();
+    }
+
+    checkType (v) {
+      return (options.checkType || super.checkType)(v);
+    }
+
+    cast (v) {
+      return (options.cast || super.cast)(v);
+    }
+
+  };
+
+  let aliases = ensureArray(options.aliases);
+
+  if (!aliases.length) {
+    throw new Error(`options.aliases is required when defining a data type`);
+  }
+
   aliases.forEach(alias => {
-    if (resolveIdForAlias(alias)) {
-      throw new Error(`A type with alias ${alias} is already defined`);
+    if (validators.has(alias)) {
+      throw new Error(`A data type with alias ${alias} already exists`);
+    } else {
+      validators.set(alias, Type);
     }
   });
-
-  let id = Symbol();
-
-  [id, ...aliases].forEach(alias => types.set(alias, id));
-
-  return id;
 }
 
-export function resolveIdForAlias (alias) {
-  if (isArray(alias)) return alias.map(resolveIdForAlias);
-  return types.get(alias);
+export function createTypeValidator (definition, options) {
+  if (typeof definition !== 'object') {
+    definition = { $type: definition };
+  }
+
+  let type = definition.$type;
+  let Validator = validators.get(type);
+
+  if (!Validator) {
+    throw new Error(`Data type could not be found for the alias: ${type}`);
+  }
+
+  if (!options.path) {
+    options.path = '';
+  }
+
+  return new Validator(definition, options);
 }
