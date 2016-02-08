@@ -1,6 +1,6 @@
 'use strict';
 
-import { Promise, clone, isArray, isFunction } from './utils';
+import { Promise, clone, isArray, isFunction, ensureArray } from './utils';
 
 import AbstractValidator from './abstract-validator';
 import ValidationResult from './validation-result';
@@ -21,7 +21,6 @@ class DataValidator extends AbstractValidator {
   }
 
   setupAssertions (assertions) {
-    // let assertions = this.config.assertions || {};
     return Object
       .keys(assertions || {})
       .filter(key => key in this.definition)
@@ -33,17 +32,7 @@ class DataValidator extends AbstractValidator {
   }
 
   setupTransforms () {
-    let transforms = this.definition.$transform;
-
-    if (!transforms) {
-      return [];
-    }
-
-    if (!isArray(transforms)) {
-      return [transforms];
-    }
-
-    return transforms.filter(isFunction);
+    return ensureArray(this.definition.$transform).filter(isFunction);
   }
 
   validate (data, opt) {
