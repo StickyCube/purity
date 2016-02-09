@@ -14,9 +14,8 @@ function createMessage (template) {
     .replace(/\${(errorType)}/, this.type);
 }
 
-export class ValidationError extends Error {
+export class ValidationError {
   constructor (opt) {
-    super();
     this.type = opt.type;
     this.path = opt.path;
 

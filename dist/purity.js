@@ -3635,10 +3635,6 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 var templates = {
   // error message template for missing data
   missing: 'Missing required field ${path}',
@@ -3651,24 +3647,15 @@ function createMessage(template) {
   return template.replace(/\${(path)}/ig, this.path).replace(/\${(errorType)}/, this.type);
 }
 
-var ValidationError = exports.ValidationError = function (_Error) {
-  _inherits(ValidationError, _Error);
+var ValidationError = exports.ValidationError = function ValidationError(opt) {
+  _classCallCheck(this, ValidationError);
 
-  function ValidationError(opt) {
-    _classCallCheck(this, ValidationError);
+  this.type = opt.type;
+  this.path = opt.path;
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ValidationError).call(this));
-
-    _this.type = opt.type;
-    _this.path = opt.path;
-
-    var template = templates[_this.type];
-    _this.message = createMessage.call(_this, template);
-    return _this;
-  }
-
-  return ValidationError;
-}(Error);
+  var template = templates[this.type];
+  this.message = createMessage.call(this, template);
+};
 
 },{}],74:[function(require,module,exports){
 'use strict';
