@@ -8,11 +8,11 @@ It can be installed via:
 
 Purity, Inspired by [mongoose](https://www.npmjs.com/package/mongoose),  exposes a schema-based validation API allowing you to apply constraints and transformations to the data in your application.
 
-For usage with express, please see the [express-purity]() package on npm.
+For usage with express, please see the [express-purity](https://www.npmjs.com/package/express-purity) package on npm.
 
 ## Quickstart Example
 
-Most of the action happens through the Schema object.
+Most of the action happens through the [Schema](#purityschemadefiniton--options) object.
 ```javascript
 import { Schema } from 'purity';
 ```
@@ -104,7 +104,7 @@ ___
 Create a re-usable schema to validate data against.
 
 ###### Arguments
-* `definition` A definition (usually an object) representing the expected data. Detailing type and value constraints, with optional defaults and transformations. See detailed description below for more information.
+* `definition` A definition (usually an object) representing the expected data. Detailing type and value constraints, with optional defaults and transformations. See detailed description [below](#schema-definition) for more information.
 * `options` - schema options
   * `options.cast {Boolean}` - when true, purity will attempt to cast all properties to their expected types _before_ applying constraints.
 
