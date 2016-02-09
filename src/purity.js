@@ -33,10 +33,10 @@ createDataType({
 
 // === String
 createDataType({
-  checkType: v => typeof v === 'string',
+  check: v => typeof v === 'string',
   cast: v => `${v}`,
   aliases: [Types.String, String],
-  assertions: {
+  constraints: {
     $minlength: (act, opt) => act.length >= opt,
     $maxlength: (act, opt) => act.length <= opt,
     $fixedwidth: (act, opt) => act.length === opt,
@@ -46,10 +46,10 @@ createDataType({
 
 // === Number
 createDataType({
-  checkType: v => !isNan(v),
+  check: v => !isNan(v),
   cast: v => parseFloat(v),
   aliases: [Types.Number, Number],
-  assertions: {
+  constraints: {
     $gt: (act, opt) => act > opt,
     $gte: (act, opt) => act >= opt,
     $lt: (act, opt) => act < opt,
@@ -61,10 +61,10 @@ createDataType({
 
 // === Boolean;
 createDataType({
-  checkType: v => (typeof v === 'boolean'),
+  check: v => (typeof v === 'boolean'),
   cast: v => !!v,
   aliases: [Types.Boolean, Boolean],
-  assertions: {
+  constraints: {
     $eq: (act, opt) => act === opt,
     $neq: (act, opt) => act !== opt
   }
@@ -72,12 +72,12 @@ createDataType({
 
 // === Date
 createDataType({
-  checkType: v => {
+  check: v => {
     return (v instanceof Date) && v.toString() !== 'Invalid Date';
   },
   cast: v => new Date(v),
   aliases: [Types.Date, Date],
-  assertions: {
+  constraints: {
     $gt: (act, opt) => act > opt,
     $lt: (act, opt) => act < opt
   }

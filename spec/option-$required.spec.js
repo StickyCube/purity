@@ -70,4 +70,49 @@ describe('$required option', function () {
       });
     });
   });
+
+  describe('With a falsy number', function () {
+    before(function () {
+      schema = purity.Schema({
+        data: { $type: Number, $required: true }
+      });
+    });
+
+    it('Should pass with 0', function (done) {
+      schema.validate({ data: 0 }, function (e, r) {
+        expect(e).to.be.null;
+        done();
+      });
+    });
+  });
+
+  describe('With a falsy string', function () {
+    before(function () {
+      schema = purity.Schema({
+        data: { $type: String, $required: true }
+      });
+    });
+
+    it('Should fail with an empty string', function (done) {
+      schema.validate({ data: '' }, function (e, r) {
+        expect(e).not.to.be.null;
+        done();
+      });
+    });
+  });
+
+  describe('With a falsy bool', function () {
+    before(function () {
+      schema = purity.Schema({
+        data: { $type: Boolean, $required: true }
+      });
+    });
+
+    it('Should pass with false', function (done) {
+      schema.validate({ data: false }, function (e, r) {
+        expect(e).to.be.null;
+        done();
+      });
+    });
+  });
 });

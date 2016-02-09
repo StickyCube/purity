@@ -1,6 +1,12 @@
 'use strict';
 
-import { Promise, clone, isArray, isFunction, ensureArray } from './utils';
+import {
+  Promise,
+  clone,
+  isFunction,
+  ensureArray,
+  isMissing
+} from './utils';
 
 import AbstractValidator from './abstract-validator';
 import ValidationResult from './validation-result';
@@ -12,7 +18,7 @@ class DataValidator extends AbstractValidator {
     this.definition = definition;
   }
 
-  checkType () {
+  check () {
     return true;
   }
 
@@ -20,13 +26,13 @@ class DataValidator extends AbstractValidator {
     return v;
   }
 
-  setupAssertions (assertions) {
+  setupConstraints (constraints) {
     return Object
-      .keys(assertions || {})
+      .keys(constraints || {})
       .filter(key => key in this.definition)
       .reduce((arr, key) => {
         let opts = this.definition[key];
-        let fn = assertions[key];
+        let fn = constraints[key];
         return [{ opts: opts, fn: fn }, ...arr];
       }, []);
   }
@@ -40,7 +46,7 @@ class DataValidator extends AbstractValidator {
 
     options.path = this.options.path;
 
-    return data == null
+    return isMissing(data)
       ? this.validateMissing(data, options)
       : this.validateData(data, options);
   }
@@ -85,21 +91,21 @@ class DataValidator extends AbstractValidator {
       data = this.cast(data);
     }
 
-    if (!this.checkType(data)) return this.error('invalid');
+    if (!this.check(data)) return this.error('invalid');
 
     return this
-      .applyAssertions(data)
+      .applyconstraints(data)
       .then(() => {
         options.value = this.transform(data);
         return new ValidationResult(options);
       });
   }
 
-  applyAssertions (data) {
-    let assertions = this.assertions;
+  applyconstraints (data) {
+    let constraints = this.constraints;
 
-    for (let i = 0; i < assertions.length; i += 1) {
-      let assertion = assertions[i];
+    for (let i = 0; i < constraints.length; i += 1) {
+      let assertion = constraints[i];
       let assert = assertion.fn;
       let opts = assertion.opts;
 

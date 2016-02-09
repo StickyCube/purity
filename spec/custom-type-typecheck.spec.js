@@ -7,7 +7,7 @@ describe('Custom type checking', function () {
   var schema = null;
   var opts = {
     aliases: ['Alias_3'],
-    checkType: function (v) { return typeof v === 'string' || typeof v === 'number'; }
+    check: function (v) { return typeof v === 'string' || typeof v === 'number'; }
   };
 
   before(function () {

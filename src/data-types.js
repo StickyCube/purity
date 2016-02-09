@@ -17,12 +17,12 @@ export function defineType (options) {
 
     constructor () {
       super(...arguments);
-      this.assertions = this.setupAssertions(options.assertions);
+      this.constraints = this.setupConstraints(options.constraints);
       this.transforms = this.setupTransforms();
     }
 
-    checkType (v) {
-      return (options.checkType || super.checkType)(v);
+    check (v) {
+      return (options.check || super.check)(v);
     }
 
     cast (v) {

@@ -1,6 +1,5 @@
 module.exports = function (grunt) {
   var production = grunt.option('production');
-  var buildDirectory = production ? 'dist' : 'build';
 
   grunt.initConfig({
     browserify: {
@@ -15,7 +14,7 @@ module.exports = function (grunt) {
             ['babelify']
           ]
         },
-        files: { 'build/purity.js': 'src/purity.js' }
+        files: { 'dist/purity.js': 'src/purity.js' }
       }
     },
 
@@ -28,15 +27,27 @@ module.exports = function (grunt) {
           mochaOptions: ['--recursive']
         }
       }
+    },
+
+    uglify: {
+      prod: {
+        src: 'dist/purity.js',
+        dest: 'dist/purity.min.js'
+      }
     }
   });
 
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-mocha-istanbul');
 
-  grunt.registerTask('build', [
-    'browserify:source'
-  ]);
+  var buildTask = ['browserify:source'];
+
+  if (production) {
+    buildTask.push('uglify:prod');
+  }
+
+  grunt.registerTask('build', buildTask);
 
   grunt.registerTask('cover', [
     // 'build',

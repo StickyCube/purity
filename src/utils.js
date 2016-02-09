@@ -13,6 +13,7 @@ export const isPlainObject = v => isValue(v) && (v.constructor === Object);
 export const isNan = v => (v !== v) || (typeof v !== 'number');
 export const isEndpoint = v => isPlainObject(v) && ('$type' in v);
 export const identity = v => v;
+export const isMissing = v => !isValue(v) || v === '';
 
 export const ensureArray = v => {
   if (!isValue(v)) return [];
