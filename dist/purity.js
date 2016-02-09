@@ -2922,10 +2922,6 @@ var _utils = require('./utils');
 
 var _validationError = require('./validation-error');
 
-var _validationError2 = _interopRequireDefault(_validationError);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _class = function () {
@@ -2938,7 +2934,7 @@ var _class = function () {
   _createClass(_class, [{
     key: 'error',
     value: function error(type) {
-      var err = new _validationError2.default({
+      var err = new _validationError.ValidationError({
         type: type,
         path: this.options.path || ''
       });
@@ -3655,13 +3651,13 @@ function createMessage(template) {
   return template.replace(/\${(path)}/ig, this.path).replace(/\${(errorType)}/, this.type);
 }
 
-var _class = function (_Error) {
-  _inherits(_class, _Error);
+var ValidationError = exports.ValidationError = function (_Error) {
+  _inherits(ValidationError, _Error);
 
-  function _class(opt) {
-    _classCallCheck(this, _class);
+  function ValidationError(opt) {
+    _classCallCheck(this, ValidationError);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(_class).call(this));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ValidationError).call(this));
 
     _this.type = opt.type;
     _this.path = opt.path;
@@ -3671,10 +3667,8 @@ var _class = function (_Error) {
     return _this;
   }
 
-  return _class;
+  return ValidationError;
 }(Error);
-
-exports.default = _class;
 
 },{}],74:[function(require,module,exports){
 'use strict';

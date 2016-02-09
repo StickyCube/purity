@@ -1,7 +1,7 @@
 'use strict';
 
 import { Promise } from './utils';
-import ValidatonError from './validation-error';
+import { ValidationError } from './validation-error';
 
 export default class {
 
@@ -10,7 +10,7 @@ export default class {
   }
 
   error (type) {
-    let err = new ValidatonError({
+    let err = new ValidationError({
       type: type,
       path: this.options.path || ''
     });
