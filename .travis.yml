@@ -1,11 +1,9 @@
-sudo: required
-
 language: node_js
 
 cache:
+  yarn: true
   directories:
     - node_modules
-    - ~/.cache/yarn
 
 notifications:
   email: false
@@ -15,9 +13,6 @@ node_js:
   - '6'
   - '4'
 
-before_install:
-  - script/install-dependencies
-
 install:
   - yarn install --no-progress
 
@@ -25,4 +20,10 @@ script:
   - yarn run test:coverage
 
 after_success:
-  - script/deploy
+  - >
+    if [ $TRAVIS_BRANCH = 'master' ];
+    then
+      yarn run semantic-release
+    fi
+
+  - yarn run test:report
