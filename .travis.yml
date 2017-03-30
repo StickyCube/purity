@@ -1,0 +1,26 @@
+language: node_js
+
+cache:
+  directories:
+    - node_modules
+    - ~/.cache/yarn
+
+notifications:
+  email: false
+
+node_js:
+  - '7'
+  - '6'
+  - '4'
+
+before_install:
+  - script/install-dependencies
+
+install:
+  - yarn install --no-progress
+
+script:
+  - yarn run test:coverage
+
+after_success:
+  - script/deploy

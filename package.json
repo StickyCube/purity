@@ -1,8 +1,8 @@
 {
   "name": "purity",
-  "version": "1.0.3",
+  "version": "0.0.0-development",
   "description": "",
-  "main": "dist/purity.js",
+  "main": "lib/index.js",
   "keywords": [
     "data",
     "manipulation",
@@ -11,42 +11,77 @@
     "schema"
   ],
   "scripts": {
-    "build-dev": "grunt build-dev",
-    "generate-coverage": "grunt cover",
-    "test": "_mocha --recursive spec"
-  },
-  "semistandard": {
-    "globals": [
-      "describe",
-      "it",
-      "before",
-      "beforeEach",
-      "after",
-      "afterEach"
-    ]
+    "precommit": "yarn test",
+    "commit": "git-cz",
+    "test": "ava",
+    "test:coverage": "cross-env NODE_ENV=testing nyc npm t",
+    "test:report": "nyc report --reporter=lcov > coverage.lcov && codecov",
+    "prebuild": "rimraf lib",
+    "build": "babel --out-dir lib src",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "author": "Will Knowles",
   "email": "will.jk01@gmail.com",
   "url": "https://github.com/StickyCube/purity",
   "license": "MIT",
   "devDependencies": {
-    "babel": "^6.3.26",
-    "babel-cli": "^6.4.5",
-    "babel-core": "^6.4.5",
-    "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
-    "chai": "^2.3.0",
-    "es6-map": "^0.1.3",
-    "es6-promise": "^3.0.2",
-    "grunt": "^0.4.5",
-    "grunt-browserify": "^4.0.1",
-    "grunt-contrib-uglify": "^0.11.1",
-    "grunt-mocha-istanbul": "^3.0.1",
-    "isparta": "^4.0.0",
-    "mocha": "^2.3.4"
+    "ava": "0.18.x",
+    "babel-core": "6.24.x",
+    "babel-eslint": "7.2.x",
+    "babel-plugin-istanbul": "4.1.x",
+    "babel-preset-es2015": "6.24.x",
+    "codecov": "^2.1.0",
+    "commitizen": "2.9.x",
+    "condition-circle": "1.5.x",
+    "cross-env": "3.2.x",
+    "cz-conventional-changelog": "2.0.x",
+    "nyc": "10.2.x",
+    "rimraf": "2.6.x",
+    "semantic-release": "^6.3.2",
+    "semistandard": "10.0.x"
   },
   "dependencies": {
-    "object-squish": "1.1.0",
-    "ok-js": "0.2.2"
+    "custom-error": "0.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StickyCube/purity.git"
+  },
+  "babel": {
+    "sourceMaps": "inline",
+    "presets": [
+      "es2015"
+    ],
+    "env": {
+      "testing": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
+  },
+  "ava": {
+    "verbose": true,
+    "files": [
+      "__TESTS__/*.spec.js"
+    ],
+    "source": [
+      "src/**"
+    ],
+    "require": [
+      "babel-register"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }

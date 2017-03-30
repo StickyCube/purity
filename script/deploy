@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ $TRAVIS_BRANCH = 'master' ];
+then
+  yarn run semantic-release
+fi
+
+yarn run test:report
