@@ -1,5 +1,5 @@
 import test from 'ava';
-import validate, {string, ErrorReasons} from '../src/index.js';
+import validate, {string, Errors} from '../src/index.js';
 
 test('No options - no value', async t => {
   const schema = string();
@@ -41,7 +41,7 @@ test('No options - wrong value type', async t => {
     await validate(schema, 12345);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.message, ErrorReasons.TYPE_MISMATCH);
+    t.is(error.errors[0].name, Errors.TypeMismatchError);
   }
 });
 
@@ -63,7 +63,7 @@ test('Required option - no value', async t => {
     await validate(schema);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.message, ErrorReasons.VALUE_REQUIRED);
+    t.is(error.errors[0].name, Errors.RequiredFieldError);
   }
 });
 
@@ -74,7 +74,7 @@ test('Required option - null value', async t => {
     await validate(schema, null);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.message, ErrorReasons.VALUE_REQUIRED);
+    t.is(error.errors[0].name, Errors.RequiredFieldError);
   }
 });
 
@@ -85,7 +85,7 @@ test('Required option - wrong value type', async t => {
     await validate(schema, true);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.message, ErrorReasons.TYPE_MISMATCH);
+    t.is(error.errors[0].name, Errors.TypeMismatchError);
   }
 });
 
@@ -107,7 +107,7 @@ test('minlength option - too short', async t => {
     await validate(schema, 'abc');
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.message, ErrorReasons.OUT_OF_RANGE);
+    t.is(error.errors[0].name, Errors.OutOfBoundsError);
   }
 });
 
@@ -129,7 +129,7 @@ test('maxlength option - too long', async t => {
     await validate(schema, 'abcdef');
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.message, ErrorReasons.OUT_OF_RANGE);
+    t.is(error.errors[0].name, Errors.OutOfBoundsError);
   }
 });
 

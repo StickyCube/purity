@@ -1,24 +1,21 @@
 
-function create (schemaInfo) {
-  return {
-    error: function (reason, AST) {
-      return {
-        result: AST.value,
-        errors: [
-          {
-            reason,
-            schemaInfo,
-            value: AST.value,
-            valueInfo: AST.info,
-            valueType: AST.type
-          }
-        ]
-      };
-    },
-
-    success: function (AST) {
+export function create ({ AST, expectations }) {
+  return function (failures) {
+    if (failures == null) {
       return { result: AST.value };
     }
+
+    return {
+      errors: failures.map(spec => ({
+        name: spec.error,
+        value: AST.value,
+        valueType: AST.type,
+        valueInfo: AST.info,
+        expectationName: spec.name,
+        expectationValue: expectations[spec.name],
+        expectations
+      }))
+    };
   };
 }
 

@@ -1,16 +1,30 @@
-import {ValidationError} from './Constants.js';
+import {ValidationError, Errors} from './Constants.js';
 import mapValueToAST from './mapValueToAST.js';
 
-export default function validate (schema, data, options = {}) {
+export function validateAsync (schema, data, options = {}) {
+  return new Promise(function (resolve, reject) {
+    let result;
+
+    try {
+      result = validateSync(schema, data, options);
+    } catch (error) {
+      return reject(error);
+    }
+
+    return resolve(result);
+  });
+}
+
+export function validateSync (schema, data, options = {}) {
   const AST = mapValueToAST(data);
   const {result, errors} = schema(AST);
   const error = formatError(errors, options);
 
-  return new Promise(function (resolve, reject) {
-    return error
-      ? reject(error)
-      : resolve(result);
-  });
+  if (error) {
+    throw error;
+  }
+
+  return result;
 }
 
 function formatError (errors, options) {
@@ -18,9 +32,9 @@ function formatError (errors, options) {
     return null;
   }
 
-  const message = options.formatErrorMessage
-    ? options.formatErrorMessage(errors)
-    : defaultErrorMessageFormatter(errors);
+  const {formatErrorMessage = defaultFormatErrorMessage} = options;
+
+  const message = formatErrorMessage(errors);
 
   const error = new ValidationError(message);
 
@@ -29,13 +43,28 @@ function formatError (errors, options) {
   return error;
 }
 
+function defaultFormatErrorMessage (errors) {
+  errors.map(mapErrorToMessage).join(', ');
+}
+
+function mapErrorToMessage (error) {
+  let message = '';
+
+  switch (error.name) {
+    case Errors.RequiredFieldError:
+      message += 'Missing required value';
+  }
+
+  if (error.valueInfo.path) {
+    message += ` at ${error.valueInfo.path}`;
+  }
+
+  return message;
+}
+
 function isEmpty (value) {
   return (
     value == null ||
     value.length === 0
   );
-}
-
-function defaultErrorMessageFormatter (errors) {
-  return errors.map(e => e.reason).join(', ');
 }

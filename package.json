@@ -4,17 +4,19 @@
   "description": "",
   "main": "lib/index.js",
   "keywords": [
+    "validation",
+    "json",
     "data",
-    "manipulation",
     "cleanse",
     "quality",
     "schema"
   ],
   "scripts": {
+    "start": "yarn test -- -w",
     "precommit": "yarn test",
     "commit": "git-cz",
     "test": "ava",
-    "test:coverage": "cross-env NODE_ENV=testing nyc npm t",
+    "test:coverage": "cross-env NODE_ENV=testing nyc yarn test",
     "test:report": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "prebuild": "rimraf lib",
     "build": "babel --out-dir lib src",
@@ -29,6 +31,7 @@
     "babel-core": "6.24.x",
     "babel-eslint": "7.2.x",
     "babel-plugin-istanbul": "4.1.x",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "6.24.x",
     "codecov": "^2.1.0",
     "commitizen": "2.9.x",
@@ -51,6 +54,9 @@
     "sourceMaps": "inline",
     "presets": [
       "es2015"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
     ],
     "env": {
       "testing": {

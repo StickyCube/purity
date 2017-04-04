@@ -1,18 +1,19 @@
 import CustomError from 'custom-error';
 
 export const Types = {
-  NIL: Symbol('NIL'),
-  STRING: Symbol('STRING'),
-  NUMBER: Symbol('NUMBER'),
-  BOOLEAN: Symbol('BOOLEAN'),
-  ARRAY: Symbol('ARRAY'),
-  OBJECT: Symbol('OBJECT')
+  NIL: 'NIL',
+  STRING: 'STRING',
+  NUMBER: 'NUMBER',
+  BOOLEAN: 'BOOLEAN',
+  ARRAY: 'ARRAY',
+  OBJECT: 'OBJECT'
 };
 
-export const ErrorReasons = {
-  VALUE_REQUIRED: 'Value required',
-  TYPE_MISMATCH: 'Type mismatch',
-  OUT_OF_RANGE: 'Value out of range'
+export const Errors = {
+  RequiredFieldError: 'RequiredFieldError',
+  TypeMismatchError: 'TypeMismatchError',
+  OutOfBoundsError: 'OutOfBoundsError',
+  InvalidValueError: 'InvalidValueError'
 };
 
 export const ValidationError = CustomError('Purity::ValidationError');
