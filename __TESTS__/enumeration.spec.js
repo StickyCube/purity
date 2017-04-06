@@ -1,5 +1,5 @@
 import test from 'ava';
-import validate, {enumeration, Errors} from '../src/index.js';
+import validate, {enumeration, ErrorTypes} from '../src/index.js';
 
 test('No options', async t => {
   const schema = enumeration();
@@ -8,7 +8,7 @@ test('No options', async t => {
     await validate(schema, 'something');
     t.fail('Expected an Error');
   } catch (error) {
-    t.is(error.errors[0].name, Errors.InvalidValueError);
+    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
   }
 });
 
@@ -19,7 +19,7 @@ test('values option - empty array', async t => {
     await validate(schema, 'something');
     t.fail('Expected an Error');
   } catch (error) {
-    t.is(error.errors[0].name, Errors.InvalidValueError);
+    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
   }
 });
 
@@ -41,6 +41,6 @@ test('values option - invalid value', async t => {
     await validate(schema, 'not-this');
     t.fail('Expected an Error');
   } catch (error) {
-    t.is(error.errors[0].name, Errors.InvalidValueError);
+    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
   }
 });

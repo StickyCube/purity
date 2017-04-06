@@ -1,5 +1,6 @@
-import {ValidationError, Errors} from './Constants.js';
-import mapValueToAST from './mapValueToAST.js';
+import isEmpty from 'lodash.isempty';
+import ValidationError, {ErrorTypes} from 'constants/Errors.js';
+import mapValueToAST from 'utils/mapValueToAST.js';
 
 export function validateAsync (schema, data, options = {}) {
   return new Promise(function (resolve, reject) {
@@ -18,7 +19,7 @@ export function validateAsync (schema, data, options = {}) {
 export function validateSync (schema, data, options = {}) {
   const AST = mapValueToAST(data);
   const {result, errors} = schema(AST);
-  const error = formatError(errors, options);
+  const error = formatError(errors, options.formatErrorMessage);
 
   if (error) {
     throw error;
@@ -27,15 +28,12 @@ export function validateSync (schema, data, options = {}) {
   return result;
 }
 
-function formatError (errors, options) {
+function formatError (errors, formatErrorMessage = defaultFormatErrorMessage) {
   if (isEmpty(errors)) {
     return null;
   }
 
-  const {formatErrorMessage = defaultFormatErrorMessage} = options;
-
   const message = formatErrorMessage(errors);
-
   const error = new ValidationError(message);
 
   error.errors = errors;
@@ -51,7 +49,7 @@ function mapErrorToMessage (error) {
   let message = '';
 
   switch (error.name) {
-    case Errors.RequiredFieldError:
+    case ErrorTypes.RequiredValue:
       message += 'Missing required value';
   }
 
@@ -60,11 +58,4 @@ function mapErrorToMessage (error) {
   }
 
   return message;
-}
-
-function isEmpty (value) {
-  return (
-    value == null ||
-    value.length === 0
-  );
 }

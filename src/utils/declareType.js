@@ -1,4 +1,4 @@
-import ResultFormatter from '../ResultFormatter.js';
+import ResultFormatter from 'utils/ResultFormatter.js';
 
 export default options => (expectations = {}) => AST => {
   const shouldIgnore = options.ignore || defaultShouldIgnore;
@@ -18,7 +18,7 @@ export default options => (expectations = {}) => AST => {
   }
 
   const failingSpecs = getFailingSpecs(
-    options.specs,
+    options.mixins,
     AST,
     mergedExpectations
   );

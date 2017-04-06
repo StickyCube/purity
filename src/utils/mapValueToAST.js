@@ -1,4 +1,4 @@
-import {Types} from './Constants.js';
+import Type from 'constants/Type.js';
 
 export default function mapValueToAST (value, info = {}) {
   return {
@@ -10,26 +10,26 @@ export default function mapValueToAST (value, info = {}) {
 
 function getTypeForValue (value) {
   if (value == null || isNan(value)) {
-    return Types.NIL;
+    return Type.NIL;
   }
 
   if (typeof value === 'string') {
-    return Types.STRING;
+    return Type.STRING;
   }
 
   if (typeof value === 'number') {
-    return Types.NUMBER;
+    return Type.NUMBER;
   }
 
   if (typeof value === 'boolean') {
-    return Types.BOOLEAN;
+    return Type.BOOLEAN;
   }
 
   if (Array.isArray(value)) {
-    return Types.ARRAY;
+    return Type.ARRAY;
   }
 
-  return Types.OBJECT;
+  return Type.OBJECT;
 }
 
 function isNan (value) {

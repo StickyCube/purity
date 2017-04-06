@@ -3,8 +3,7 @@ import declareType from 'utils/declareType.js';
 import composeMixins from 'utils/composeMixins.js';
 import valueType from 'mixins/valueType.js';
 import requiredValue from 'mixins/requiredValue.js';
-import arrayLike from 'mixins/arrayLike.js';
-import regexpMatch from 'mixins/regexpMatch.js';
+import arithmeticComparators from 'mixins/arithmeticComparators.js';
 
 export default declareType({
   ignore: function (AST, expectations) {
@@ -14,9 +13,8 @@ export default declareType({
     );
   },
   mixins: composeMixins(
+    valueType(Type.NUMBER),
     requiredValue(),
-    valueType(Type.STRING),
-    arrayLike(),
-    regexpMatch()
+    arithmeticComparators()
   )
 });
