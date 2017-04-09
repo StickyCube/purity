@@ -1,9 +1,9 @@
-import {ErrorTypes} from 'constants/Errors.js';
+import {ErrorTypes} from '../../constants.js';
 
-export default function regexpMatch () {
+export default function matchable () {
   return {
     name: 'match',
-    error: ErrorTypes.InvalidValue,
+    error: ErrorTypes.Invalid,
     when: function (AST, expectations) {
       return isRegExp(expectations.match);
     },

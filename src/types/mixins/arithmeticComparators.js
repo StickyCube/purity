@@ -1,10 +1,10 @@
-import {ErrorTypes} from 'constants/Errors';
+import {ErrorTypes} from '../../constants.js';
 
 export default function arithmeticComparators () {
   return [
     {
       name: 'gt',
-      error: ErrorTypes.InvalidValue,
+      error: ErrorTypes.Invalid,
       when: function (AST, expectations) {
         return typeof expectations.gt === 'number';
       },
@@ -14,7 +14,7 @@ export default function arithmeticComparators () {
     },
     {
       name: 'gte',
-      error: ErrorTypes.InvalidValue,
+      error: ErrorTypes.Invalid,
       when: function (AST, expectations) {
         return typeof expectations.gte === 'number';
       },
@@ -24,7 +24,7 @@ export default function arithmeticComparators () {
     },
     {
       name: 'lt',
-      error: ErrorTypes.InvalidValue,
+      error: ErrorTypes.Invalid,
       when: function (AST, expectations) {
         return typeof expectations.lt === 'number';
       },
@@ -34,7 +34,7 @@ export default function arithmeticComparators () {
     },
     {
       name: 'lte',
-      error: ErrorTypes.InvalidValue,
+      error: ErrorTypes.Invalid,
       when: function (AST, expectations) {
         return typeof expectations.lte === 'number';
       },

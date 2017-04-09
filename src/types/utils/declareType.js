@@ -1,4 +1,4 @@
-import ResultFormatter from 'utils/ResultFormatter.js';
+import ResultFormatter from './ResultFormatter.js';
 
 export default options => (expectations = {}) => AST => {
   const shouldIgnore = options.ignore || defaultShouldIgnore;

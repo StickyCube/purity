@@ -1,10 +1,10 @@
-import Type from 'constants/Type.js';
-import declareType from 'utils/declareType.js';
-import composeMixins from 'utils/composeMixins.js';
-import valueType from 'mixins/valueType.js';
-import requiredValue from 'mixins/requiredValue.js';
-import arrayLike from 'mixins/arrayLike.js';
-import regexpMatch from 'mixins/regexpMatch.js';
+import {Type} from '../constants.js';
+import declareType from './utils/declareType.js';
+import composeMixins from './utils/composeMixins.js';
+import typeChecked from './mixins/typeChecked.js';
+import requiredValue from './mixins/requiredValue.js';
+import arrayLike from './mixins/arrayLike.js';
+import matchable from './mixins/matchable.js';
 
 export default declareType({
   ignore: function (AST, expectations) {
@@ -15,8 +15,8 @@ export default declareType({
   },
   mixins: composeMixins(
     requiredValue(),
-    valueType(Type.STRING),
+    typeChecked(Type.STRING),
     arrayLike(),
-    regexpMatch()
+    matchable()
   )
 });

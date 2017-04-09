@@ -41,7 +41,7 @@ test('No options - wrong value type', async t => {
     await validate(schema, 12345);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });
 
@@ -60,10 +60,10 @@ test('Required option - no value', async t => {
   const schema = string({ required: true });
 
   try {
-    await validate(schema);
+    await validate(schema, undefined);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.RequiredValue);
+    t.is(error.errors[0].name, ErrorTypes.Required);
   }
 });
 
@@ -74,7 +74,7 @@ test('Required option - null value', async t => {
     await validate(schema, null);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.RequiredValue);
+    t.is(error.errors[0].name, ErrorTypes.Required);
   }
 });
 
@@ -85,7 +85,7 @@ test('Required option - wrong value type', async t => {
     await validate(schema, true);
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });
 
@@ -107,7 +107,7 @@ test('minlength option - too short', async t => {
     await validate(schema, 'abc');
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });
 
@@ -129,7 +129,7 @@ test('maxlength option - too long', async t => {
     await validate(schema, 'abcdef');
     t.fail('Expected an error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });
 

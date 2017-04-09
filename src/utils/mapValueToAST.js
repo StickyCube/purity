@@ -1,4 +1,4 @@
-import Type from 'constants/Type.js';
+import {Type} from '../constants.js';
 
 export default function mapValueToAST (value, info = {}) {
   return {

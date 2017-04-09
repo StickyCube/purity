@@ -1,9 +1,9 @@
-import {ErrorTypes} from 'constants/Errors.js';
+import {ErrorTypes} from '../../constants.js';
 
-export default function valueType (expectedType) {
+export default function typeChecked (expectedType) {
   return {
     name: '$',
-    error: ErrorTypes.InvalidValue,
+    error: ErrorTypes.Invalid,
     when: function () {
       return true;
     },

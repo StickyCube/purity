@@ -1,10 +1,10 @@
-import {ErrorTypes} from 'constants/Errors.js';
+import {ErrorTypes} from '../../constants.js';
 
 export default function arrayLike () {
   return [
     {
       name: 'maxlength',
-      error: ErrorTypes.InvalidValue,
+      error: ErrorTypes.Invalid,
       when: function (AST, expectations) {
         return expectations.maxlength > 0;
       },
@@ -14,7 +14,7 @@ export default function arrayLike () {
     },
     {
       name: 'minlength',
-      error: ErrorTypes.InvalidValue,
+      error: ErrorTypes.Invalid,
       when: function (AST, expectations) {
         return expectations.minlength >= 0;
       },

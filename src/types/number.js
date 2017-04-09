@@ -1,9 +1,10 @@
-import Type from 'constants/Type.js';
-import declareType from 'utils/declareType.js';
-import composeMixins from 'utils/composeMixins.js';
-import valueType from 'mixins/valueType.js';
-import requiredValue from 'mixins/requiredValue.js';
-import arithmeticComparators from 'mixins/arithmeticComparators.js';
+import {Type} from '../constants.js';
+import declareType from './utils/declareType.js';
+import composeMixins from './utils/composeMixins.js';
+import typeChecked from './mixins/typeChecked.js';
+import requiredValue from './mixins/requiredValue.js';
+import arithmeticComparators from './mixins/arithmeticComparators.js';
+import matchable from './mixins/matchable.js';
 
 export default declareType({
   ignore: function (AST, expectations) {
@@ -13,8 +14,9 @@ export default declareType({
     );
   },
   mixins: composeMixins(
-    valueType(Type.NUMBER),
+    typeChecked(Type.NUMBER),
     requiredValue(),
-    arithmeticComparators()
+    arithmeticComparators(),
+    matchable()
   )
 });

@@ -1,10 +1,9 @@
-import Type from 'constants/Type.js';
-import {ErrorTypes} from 'constants/Errors.js';
+import {ErrorTypes, Type} from '../../constants.js';
 
 export default function requiredValue () {
   return {
     name: 'required',
-    error: ErrorTypes.RequiredValue,
+    error: ErrorTypes.Required,
     when: function (AST, expectations) {
       return expectations.required;
     },

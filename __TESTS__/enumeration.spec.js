@@ -8,7 +8,7 @@ test('No options', async t => {
     await validate(schema, 'something');
     t.fail('Expected an Error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });
 
@@ -19,7 +19,7 @@ test('values option - empty array', async t => {
     await validate(schema, 'something');
     t.fail('Expected an Error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });
 
@@ -41,6 +41,6 @@ test('values option - invalid value', async t => {
     await validate(schema, 'not-this');
     t.fail('Expected an Error');
   } catch (error) {
-    t.is(error.errors[0].name, ErrorTypes.InvalidValue);
+    t.is(error.errors[0].name, ErrorTypes.Invalid);
   }
 });

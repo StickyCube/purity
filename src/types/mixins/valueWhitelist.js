@@ -1,9 +1,9 @@
-import {ErrorTypes} from 'constants/Errors.js';
+import {ErrorTypes} from '../../constants.js';
 
 export default function valueWhitelist () {
   return {
     name: 'values',
-    error: ErrorTypes.InvalidValue,
+    error: ErrorTypes.Invalid,
     when: function (AST, expectations) {
       return Array.isArray(expectations.values);
     },

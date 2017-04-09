@@ -1,6 +1,7 @@
 import isEmpty from 'lodash.isempty';
-import ValidationError, {ErrorTypes} from 'constants/Errors.js';
-import mapValueToAST from 'utils/mapValueToAST.js';
+import ValidationError from './ValidationError.js';
+import {ErrorTypes} from './constants.js';
+import mapValueToAST from './utils/mapValueToAST.js';
 
 export function validateAsync (schema, data, options = {}) {
   return new Promise(function (resolve, reject) {
@@ -49,7 +50,7 @@ function mapErrorToMessage (error) {
   let message = '';
 
   switch (error.name) {
-    case ErrorTypes.RequiredValue:
+    case ErrorTypes.Required:
       message += 'Missing required value';
   }
 

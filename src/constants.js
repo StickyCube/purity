@@ -1,5 +1,5 @@
 
-const Type = {
+export const Type = {
   NIL: 'NIL',
   STRING: 'STRING',
   NUMBER: 'NUMBER',
@@ -8,4 +8,7 @@ const Type = {
   OBJECT: 'OBJECT'
 };
 
-export default Type;
+export const ErrorTypes = {
+  Required: 'Required',
+  Invalid: 'Invalid'
+};
