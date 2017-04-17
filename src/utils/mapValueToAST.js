@@ -1,11 +1,38 @@
 import {Type} from '../constants.js';
 
 export default function mapValueToAST (value, info = {}) {
-  return {
+  const AST = {
     value: value,
     info: info,
-    type: getTypeForValue(value)
+    type: getTypeForValue(value),
+    fields: null
   };
+
+  if (AST.type === Type.OBJECT || AST.type === Type.ARRAY) {
+    AST.fields = getASTFieldsForEnumerable(AST);
+  }
+
+  return AST;
+}
+
+function getASTFieldsForEnumerable (AST) {
+  return Object.keys(AST.value).map(path => {
+    let fieldPath;
+
+    if (AST.info.path == null) {
+      fieldPath = path;
+    } else {
+      fieldPath = `${AST.info.path}.${path}`;
+    }
+
+    return mapValueToAST(
+      AST.value[path],
+      {
+        path: fieldPath,
+        parent: AST
+      }
+    );
+  });
 }
 
 function getTypeForValue (value) {
